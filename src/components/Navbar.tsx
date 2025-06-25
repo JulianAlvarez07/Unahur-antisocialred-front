@@ -6,7 +6,7 @@ const Navbar = () => {
       <ul className="flex space-x-6">
         <li className="relative group">
           <Link
-            to="/"
+            to="/home"
             className="px-4 py-2 inline-block transition-all duration-300 hover:text-cyan-400"
           >
             <span className="relative z-10">Inicio</span>

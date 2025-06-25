@@ -1,15 +1,29 @@
 import AppRouter from "@/routes/App-router";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useLocation } from "react-router-dom";
 import Layout from "@/components/Layout";
-const App = () => {
+
+const AppContent = () => {
+  const location = useLocation();
+  const isLoginPage = location.pathname === "/";
+
   return (
-    <div>
-      <BrowserRouter>
+    <div className="min-h-screen">
+      {isLoginPage ? (
+        <AppRouter />
+      ) : (
         <Layout>
           <AppRouter />
         </Layout>
-      </BrowserRouter>
+      )}
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 };
 
