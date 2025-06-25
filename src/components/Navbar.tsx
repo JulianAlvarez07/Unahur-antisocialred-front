@@ -28,22 +28,6 @@ const Navbar = () => {
             <span className="relative z-10">Publicaciones</span>
           </Link>
         </li>
-        <li className="relative group">
-          <Link
-            to="/comentarios"
-            className="px-4 py-2 inline-block transition-all duration-300 hover:text-cyan-400"
-          >
-            <span className="relative z-10">Comentarios</span>
-          </Link>
-        </li>
-        <li className="relative group">
-          <Link
-            to="/etiquetas"
-            className="px-4 py-2 inline-block transition-all duration-300 hover:text-cyan-400"
-          >
-            <span className="relative z-10">Etiquetas</span>
-          </Link>
-        </li>
       </ul>
     </div>
   );
