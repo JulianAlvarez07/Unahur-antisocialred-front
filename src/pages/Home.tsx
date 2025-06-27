@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-
+import PostForm from "../components/PostForm";
 const Home = () => {
   return (
     <div className="container mx-auto px-4 py-6">
@@ -11,6 +11,7 @@ const Home = () => {
             <h2 className="font-titulo text-xl mb-4">
               Crear nueva publicacion
             </h2>
+            <PostForm />
           </div>
 
           {/* Feed de publicaciones */}
