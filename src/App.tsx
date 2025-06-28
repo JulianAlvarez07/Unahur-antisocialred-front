@@ -1,5 +1,6 @@
 import AppRouter from "@/routes/App-router";
 import { BrowserRouter, useLocation } from "react-router-dom";
+import { AuthProvider } from "@/context/AuthProvider";
 import Layout from "@/components/Layout";
 
 const AppContent = () => {
@@ -7,15 +8,17 @@ const AppContent = () => {
   const isLoginPage = location.pathname === "/";
 
   return (
-    <div className="min-h-screen">
-      {isLoginPage ? (
-        <AppRouter />
-      ) : (
-        <Layout>
+    <AuthProvider>
+      <div className="min-h-screen">
+        {isLoginPage ? (
           <AppRouter />
-        </Layout>
-      )}
-    </div>
+        ) : (
+          <Layout>
+            <AppRouter />
+          </Layout>
+        )}
+      </div>
+    </AuthProvider>
   );
 };
 
