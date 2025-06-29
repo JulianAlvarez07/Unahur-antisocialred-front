@@ -35,10 +35,10 @@ const Publicaciones = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="font-titulo text-center text-4xl mb-8">Publicaciones</h1>
+      <div className="container mx-auto px-4 py-6 md:py-8">
+        <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">Publicaciones</h1>
         <div className="text-center">
-          <p>Cargando publicaciones...</p>
+          <p className="text-sm md:text-base">Cargando publicaciones...</p>
         </div>
       </div>
     );
@@ -46,9 +46,9 @@ const Publicaciones = () => {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="font-titulo text-center text-4xl mb-8">Publicaciones</h1>
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+      <div className="container mx-auto px-4 py-6 md:py-8">
+        <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">Publicaciones</h1>
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm md:text-base">
           {error}
         </div>
       </div>
@@ -56,10 +56,10 @@ const Publicaciones = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="font-titulo text-center text-4xl mb-8">Publicaciones</h1>
+    <div className="container mx-auto px-4 py-6 md:py-8">
+      <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">Publicaciones</h1>
 
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {posts.map((post) => {
           // Convertir comentarios al formato esperado por PostCard
           const adaptedComments = post.comment.map(comment => ({
@@ -79,8 +79,8 @@ const Publicaciones = () => {
       </div>
 
       {posts.length === 0 && (
-        <div className="text-center py-8">
-          <p className="text-gray-500">No hay publicaciones disponibles.</p>
+        <div className="text-center py-6 md:py-8">
+          <p className="text-gray-500 text-sm md:text-base">No hay publicaciones disponibles.</p>
         </div>
       )}
     </div>

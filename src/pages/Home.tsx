@@ -57,15 +57,15 @@ const Home = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sección Principal */}
-        <main className="col-span-3 space-y-6">
+        <main className="lg:col-span-3 space-y-6">
           {/* Banner de bienvenida */}
-          <div className="bg-secondary text-white p-6 rounded-lg shadow-lg">
-            <h1 className="text-3xl font-bold mb-2">
+          <div className="bg-secondary text-white p-4 md:p-6 rounded-lg shadow-lg">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2">
               ¡Bienvenido a UnaHur Anti-Social Net!
             </h1>
-            <p className="text-lg opacity-90">
+            <p className="text-sm md:text-base lg:text-lg opacity-90">
               {usuario 
                 ? `Hola ${usuario.nickName}, ¿qué estás pensando hoy?` 
                 : "La red social donde menos social, más auténtico. Conectate con Los CRUDos."
@@ -75,15 +75,15 @@ const Home = () => {
 
           {/* Crear nueva publicación - Solo si está logueado */}
           {usuario && (
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center">
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 mb-4">
+                <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mx-auto sm:mx-0">
                   <span className="text-white font-bold text-lg">
                     {usuario.nickName.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-800">
+                <div className="text-center sm:text-left">
+                  <h2 className="text-lg md:text-xl font-semibold text-gray-800">
                     ¿Qué estás pensando, {usuario.nickName}?
                   </h2>
                   <p className="text-sm text-gray-500">
@@ -97,22 +97,22 @@ const Home = () => {
 
           {/* Call to action para usuarios no logueados */}
           {!usuario && (
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-8 text-center">
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 md:p-8 text-center">
               <div className="max-w-md mx-auto">
-                <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-2">
                   ¡Únete a la conversación!
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-sm md:text-base text-gray-600 mb-4">
                   Inicia sesión para crear publicaciones y conectar con otros CRUDos
                 </p>
                 <Link
                   to="/"
-                  className="inline-block bg-secondary text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors font-medium"
+                  className="inline-block bg-secondary text-white px-4 md:px-6 py-2 md:py-3 rounded-md hover:bg-blue-700 transition-colors font-medium text-sm md:text-base"
                 >
                   Iniciar Sesión
                 </Link>
@@ -121,8 +121,8 @@ const Home = () => {
           )}
 
           {/* Feed de publicaciones */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">Publicaciones recientes</h2>
+          <div className="space-y-4 md:space-y-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800">Publicaciones recientes</h2>
             
             {loading && (
               <div className="text-center py-8">
@@ -131,7 +131,7 @@ const Home = () => {
             )}
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm md:text-base">
                 {error}
               </div>
             )}
@@ -171,13 +171,13 @@ const Home = () => {
         </main>
 
         {/* Sidebar derecho */}
-        <aside className="col-span-1 space-y-6">
+        <aside className="lg:col-span-1 space-y-4 md:space-y-6">
           {/* Tendencias */}
           <div className="bg-secondary rounded-lg shadow-md">
-            <div className="p-4 border-b border-blue-600">
-              <h2 className="text-xl font-bold text-white">🔥 Tendencias</h2>
+            <div className="p-3 md:p-4 border-b border-blue-600">
+              <h2 className="text-lg md:text-xl font-bold text-white">🔥 Tendencias</h2>
             </div>
-            <div className="p-4 space-y-3">
+            <div className="p-3 md:p-4 space-y-2 md:space-y-3">
               {loading ? (
                 <div className="text-center py-4">
                   <p className="text-white text-sm">Cargando tendencias...</p>
@@ -185,7 +185,7 @@ const Home = () => {
               ) : tags.length > 0 ? (
                 tags.map((tag) => (
                   <div key={tag.id} className="flex justify-between items-center py-2 hover:bg-blue-600 hover:bg-opacity-20 rounded px-2 transition-colors">
-                    <span className="text-white font-medium">#{tag.nombreEtiqueta}</span>
+                    <span className="text-white font-medium text-sm md:text-base">#{tag.nombreEtiqueta}</span>
                     <span className="text-xs text-gray-200 bg-white bg-opacity-20 px-2 py-1 rounded-full">
                       Tag
                     </span>
@@ -201,26 +201,26 @@ const Home = () => {
 
           {/* Estadísticas */}
           <div className="bg-white rounded-lg shadow-md border border-gray-200">
-            <div className="p-4 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-800">📊 CRUDos Stats</h2>
+            <div className="p-3 md:p-4 border-b border-gray-200">
+              <h2 className="text-lg md:text-xl font-bold text-gray-800">📊 CRUDos Stats</h2>
             </div>
-            <div className="p-4 space-y-4">
+            <div className="p-3 md:p-4 space-y-3 md:space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">👥 Miembros registrados</span>
+                <span className="text-gray-600 text-sm md:text-base">👥 Miembros registrados</span>
                 <span className="font-bold text-secondary">{loading ? "..." : users.length}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">📝 Publicaciones</span>
+                <span className="text-gray-600 text-sm md:text-base">📝 Publicaciones</span>
                 <span className="font-bold text-secondary">{loading ? "..." : posts.length}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">💬 Comentarios</span>
+                <span className="text-gray-600 text-sm md:text-base">💬 Comentarios</span>
                 <span className="font-bold text-secondary">
                   {loading ? "..." : posts.reduce((total, post) => total + (post.comment?.length || 0), 0)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">🏷️ Tags disponibles</span>
+                <span className="text-gray-600 text-sm md:text-base">🏷️ Tags disponibles</span>
                 <span className="font-bold text-secondary">{loading ? "..." : tags.length}</span>
               </div>
             </div>
@@ -228,19 +228,19 @@ const Home = () => {
 
           {/* Datos curiosos */}
           <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg shadow-md border border-gray-200">
-            <div className="p-4 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-800">💡 ¿Sabías que...?</h2>
+            <div className="p-3 md:p-4 border-b border-gray-200">
+              <h2 className="text-lg md:text-xl font-bold text-gray-800">💡 ¿Sabías que...?</h2>
             </div>
-            <div className="p-4 space-y-4 text-sm">
-              <div className="bg-white p-3 rounded-lg border-l-4 border-secondary">
+            <div className="p-3 md:p-4 space-y-3 md:space-y-4 text-sm">
+              <div className="bg-white p-2 md:p-3 rounded-lg border-l-4 border-secondary">
                 <p className="font-medium text-gray-800">CRUD significa:</p>
                 <p className="text-gray-600">Create, Read, Update, Delete</p>
               </div>
-              <div className="bg-white p-3 rounded-lg border-l-4 border-green-500">
+              <div className="bg-white p-2 md:p-3 rounded-lg border-l-4 border-green-500">
                 <p className="font-medium text-gray-800">React fue creado por:</p>
                 <p className="text-gray-600">Facebook (Meta) en 2013</p>
               </div>
-              <div className="bg-white p-3 rounded-lg border-l-4 border-purple-500">
+              <div className="bg-white p-2 md:p-3 rounded-lg border-l-4 border-purple-500">
                 <p className="font-medium text-gray-800">Somos "Anti-Social" porque:</p>
                 <p className="text-gray-600">Valoramos calidad sobre cantidad</p>
               </div>
@@ -250,17 +250,17 @@ const Home = () => {
           {/* Call to action para no autenticados */}
           {!usuario && (
             <div className="bg-gradient-to-br from-secondary to-blue-600 rounded-lg shadow-md text-white">
-              <div className="p-6 text-center">
-                <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl">🚀</span>
+              <div className="p-4 md:p-6 text-center">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-xl md:text-2xl">🚀</span>
                 </div>
-                <h3 className="font-bold mb-2">¿Listo para unirte?</h3>
-                <p className="text-sm opacity-90 mb-4">
+                <h3 className="font-bold mb-2 text-sm md:text-base">¿Listo para unirte?</h3>
+                <p className="text-xs md:text-sm opacity-90 mb-4">
                   Regístrate y forma parte de Los CRUDos
                 </p>
                 <Link
                   to="/register"
-                  className="inline-block bg-white text-secondary px-4 py-2 rounded-md hover:bg-gray-100 transition-colors font-medium text-sm"
+                  className="inline-block bg-white text-secondary px-3 md:px-4 py-1.5 md:py-2 rounded-md hover:bg-gray-100 transition-colors font-medium text-xs md:text-sm"
                 >
                   Registrarse
                 </Link>
