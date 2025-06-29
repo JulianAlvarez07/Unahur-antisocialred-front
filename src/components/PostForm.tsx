@@ -1,36 +1,51 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthProvider';
+
 const PostForm = () => {
     const [contenido, setContenido] = useState('');
-    const { usuario } = useAuth()
-    const navigate = useNavigate();
+    const auth = useAuth();
+    const usuario = auth?.usuario;
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        
+        if (!usuario) {
+            alert("Debes iniciar sesión para crear una publicación");
+            return;
+        }
+
         const post = {
             contenido: contenido,
-            userId: usuario?.id,
-        }
-        const response = await fetch('http://localhost:3001/post', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(post),
-        });
-        if (response.ok) {
-            console.log('Post creado exitosamente');
-            setContenido('');
+            userId: usuario.id,
+        };
 
-        } else {
-            console.error('Error al crear el post');
+        try {
+            const response = await fetch('http://localhost:3001/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(post),
+            });
+
+            if (response.ok) {
+                console.log('Post creado exitosamente');
+                setContenido('');
+                // Opcional: recargar la página o navegar
+                window.location.reload();
+            } else {
+                console.error('Error al crear el post');
+                alert('Error al crear la publicación');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al conectar con el servidor');
         }
-    }
+    };
     return (
         <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Crear Nueva Publicación</h2>
 
-            <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Textarea for post content */}
                 <div>
                     <label
@@ -64,7 +79,7 @@ const PostForm = () => {
                 <div className="flex items-center justify-end pt-4 border-t border-gray-200">
                     {/* Publish button */}
                     <button
-                        onClick={handleSubmit}
+                        type="submit"
                         disabled={!contenido.trim()}
                         className={`
                             px-6 py-2 rounded-md font-medium text-white transition-colors duration-200
@@ -77,7 +92,7 @@ const PostForm = () => {
                         Publicar
                     </button>
                 </div>
-            </div>
+            </form>
         </div>
     );
 };

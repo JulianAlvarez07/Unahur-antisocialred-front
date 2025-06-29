@@ -22,11 +22,11 @@ const CommentCard = ({ comment }: CommentCardProps) => {
                 <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-1">
                         <span className="font-medium text-sm text-gray-700">
-                            Usuario {comment.userIdComment} //TODO borrar usuario hardcodeado
+                            Usuario {comment.userId}
                         </span>
                     </div>
                     <p className="text-gray-800 text-sm leading-relaxed">
-                        {comment.comentario}
+                        {comment.contenido}
                     </p>
                 </div>
             </div>

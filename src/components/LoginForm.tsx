@@ -4,33 +4,36 @@ import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
-    const navigate = useNavigate()
-    const { setUsuario } = useAuth()
-    const [nombre, setNombre] = useState("")
-    const [contrasena, setContrasena] = useState("")
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNombre(e.target.value)
+    const navigate = useNavigate();
+    const authContext = useAuth();
+    const [nickname, setNickname] = useState("");
+    const [contrasena, setContrasena] = useState("");
 
-    }
-
-    const userVerification = async (nombre: string) => {
-        const response = await fetch("http://localhost:3001/users")
-        const data = await response.json()
-        const user = data.find((user: any) => user.nickName === nombre)
-        if (user) {
-            setUsuario(user)
-            navigate("/home")
-        } else {
-            alert("Usuario no encontrado")
-        }
-    }
-
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setUsuario(nombre);
-        userVerification(nombre)
+        
+        // Validar contraseña fija
+        if (contrasena !== "123456") {
+            alert("Contraseña incorrecta. Usa '123456'");
+            return;
+        }
 
-    }
+        try {
+            const response = await fetch("http://localhost:3001/users");
+            const data = await response.json();
+            const user = data.find((user: any) => user.nickName === nickname);
+            
+            if (user) {
+                authContext?.setUsuario?.(user);
+                navigate("/home");
+            } else {
+                alert("Usuario no encontrado");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error al conectar con el servidor");
+        }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center h-screen">
@@ -48,8 +51,8 @@ const LoginForm = () => {
                                     name="nickname"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00ffff]"
                                     placeholder="Ingresa tu nickname"
-                                    value={nombre}
-                                    onChange={handleChange}
+                                    value={nickname}
+                                    onChange={(e) => setNickname(e.target.value)}
                                 />
                             </div>
 
@@ -62,7 +65,9 @@ const LoginForm = () => {
                                     id="password"
                                     name="password"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00ffff]"
-                                    placeholder="Ingresa tu contraseña"
+                                    placeholder="Ingresa tu contraseña (123456)"
+                                    value={contrasena}
+                                    onChange={(e) => setContrasena(e.target.value)}
                                 />
                             </div>
 
