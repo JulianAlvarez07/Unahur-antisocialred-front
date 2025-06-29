@@ -1,8 +1,7 @@
+import { CommentForComponent } from "@/types/interfaces";
+
 interface CommentCardProps {
-    comment: {
-        userId: number;
-        contenido: string;
-    }
+    comment: CommentForComponent;
 }
 
 const CommentCard = ({ comment }: CommentCardProps) => {

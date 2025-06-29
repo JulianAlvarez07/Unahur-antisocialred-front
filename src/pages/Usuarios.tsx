@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react";
-
-interface User {
-  id: number;
-  nickName: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { User } from "@/types/interfaces";
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState<User[]>([]);
@@ -77,7 +71,10 @@ const Usuarios = () => {
                   {usuario.nickName}
                 </h3>
                 <p className="text-sm text-gray-500">
-                  Miembro desde {new Date(usuario.createdAt).toLocaleDateString()}
+                  {usuario.createdAt 
+                    ? `Miembro desde ${new Date(usuario.createdAt).toLocaleDateString()}`
+                    : "Fecha de registro no disponible"
+                  }
                 </p>
               </div>
             </div>

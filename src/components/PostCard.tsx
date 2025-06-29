@@ -1,16 +1,10 @@
 import CommentCard from "./CommentCard";
+import { UserForComponent, CommentForComponent } from "@/types/interfaces";
 
 interface PostCardProps {
     content: string;
-    user: {
-        nickName: string;
-    }
-    comments: {
-        userId: number;
-        contenido: string;
-    }[]
-    //tags: string[];
-    //timestamp?: string;
+    user: UserForComponent;
+    comments: CommentForComponent[];
 }
 
 const PostCard = ({ user, content, comments }: PostCardProps) => {

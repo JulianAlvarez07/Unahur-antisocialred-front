@@ -1,29 +1,9 @@
 import PostCard from "@/components/PostCard";
 import { useEffect, useState } from "react";
-
-interface Post {
-  id: number;
-  contenido: string;
-  userId: number;
-  fecha: string;
-}
-
-interface User {
-  id: number;
-  nickName: string;
-}
-
-interface Comment {
-  id: number;
-  contenido: string;
-  userId: number;
-  postId: number;
-}
+import { Post } from "@/types/interfaces";
 
 const Publicaciones = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [comments, setComments] = useState<{ [postId: number]: Comment[] }>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -34,7 +14,7 @@ const Publicaciones = () => {
   const fetchData = async () => {
     try {
       console.log("Intentando cargar publicaciones...");
-      // Obtener posts
+      // Obtener posts (ya incluyen comentarios y usuario)
       const postsResponse = await fetch("http://localhost:3001/post");
       console.log("Respuesta de posts:", postsResponse.status, postsResponse.statusText);
       
@@ -44,29 +24,6 @@ const Publicaciones = () => {
       const postsData = await postsResponse.json();
       console.log("Posts cargados:", postsData);
       setPosts(postsData);
-
-      // Obtener usuarios
-      const usersResponse = await fetch("http://localhost:3001/users");
-      if (usersResponse.ok) {
-        const usersData = await usersResponse.json();
-        console.log("Usuarios cargados:", usersData);
-        setUsers(usersData);
-      }
-
-      // Obtener comentarios para cada post
-      const commentsData: { [postId: number]: Comment[] } = {};
-      for (const post of postsData) {
-        try {
-          const commentsResponse = await fetch(`http://localhost:3001/post/${post.id}/comments`);
-          if (commentsResponse.ok) {
-            const postComments = await commentsResponse.json();
-            commentsData[post.id] = postComments;
-          }
-        } catch (error) {
-          console.error(`Error al cargar comentarios del post ${post.id}:`, error);
-        }
-      }
-      setComments(commentsData);
 
     } catch (error) {
       console.error("Error detallado:", error);
@@ -104,15 +61,18 @@ const Publicaciones = () => {
 
       <div className="space-y-6">
         {posts.map((post) => {
-          const user = users.find(u => u.id === post.userId);
-          const postComments = comments[post.id] || [];
+          // Convertir comentarios al formato esperado por PostCard
+          const adaptedComments = post.comment.map(comment => ({
+            userId: comment.userIdComment,
+            contenido: comment.comentario
+          }));
           
           return (
             <PostCard
               key={post.id}
-              user={user || { nickName: `Usuario ${post.userId}` }}
+              user={post.user || { nickName: `Usuario ${post.userId}` }}
               content={post.contenido}
-              comments={postComments}
+              comments={adaptedComments}
             />
           );
         })}
