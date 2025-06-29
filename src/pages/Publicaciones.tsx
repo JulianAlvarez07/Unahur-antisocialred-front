@@ -1,8 +1,19 @@
 import PostCard from "@/components/PostCard";
 import { useEffect, useState } from "react";
 
+interface Post {
+  user: {
+    nickName: string;
+  };
+  contenido: string;
+  comments: {
+    userId: number;
+    contenido: string;
+  }[];
+}
+
 const Publicaciones = () => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     dataPost();
@@ -15,7 +26,8 @@ const Publicaciones = () => {
       }
     });
     const data = await response.json();
-    console.log(data);
+    console.log("Datos completos:", data);
+
     setPosts(data)
   }
 
@@ -24,13 +36,22 @@ const Publicaciones = () => {
       <h1 className="font-titulo text-center text-4xl mb-8">Publicaciones</h1>
 
       <div className="space-y-6">
-        {posts.map((post, index) => (
-          <PostCard
-            key={index}
-            user={post.user.nickName}
-            content={post.contenido}
-          />
-        ))}
+        {posts.map((post, index) => {
+
+          // Buscar comentarios con diferentes nombres posibles
+          const comments = (post as any).comment;
+
+          return (
+
+
+            <PostCard
+              user={post.user}
+              content={post.contenido}
+              comments={comments}
+            />
+
+          );
+        })}
       </div>
     </div>
   );
