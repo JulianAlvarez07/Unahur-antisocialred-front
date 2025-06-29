@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useAuth } from '@/context/AuthProvider';
 const PostForm = () => {
     const [contenido, setContenido] = useState('');
+    const { usuario } = useAuth()
     const navigate = useNavigate();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const post = {
             contenido: contenido,
-            userId: 1, // TODO: Cambiar por el id del usuario logueado
+            userId: usuario?.id,
         }
         const response = await fetch('http://localhost:3001/post', {
             method: 'POST',
