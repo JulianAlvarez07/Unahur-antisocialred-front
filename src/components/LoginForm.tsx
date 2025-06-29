@@ -1,18 +1,35 @@
-import { useState } from "react";
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
+    const navigate = useNavigate()
     const { setUsuario } = useAuth()
-
+    const [nombre, setNombre] = useState("")
+    const [contrasena, setContrasena] = useState("")
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value)
+        setNombre(e.target.value)
+
+    }
+
+    const userVerification = async (nombre: string) => {
+        const response = await fetch("http://localhost:3001/users")
+        const data = await response.json()
+        const user = data.find((user: any) => user.nickName === nombre)
+        if (user) {
+            setUsuario(user)
+            navigate("/home")
+        } else {
+            alert("Usuario no encontrado")
+        }
     }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setUsuario(usuario);
+        setUsuario(nombre);
+        userVerification(nombre)
+
     }
 
     return (
@@ -20,7 +37,7 @@ const LoginForm = () => {
             <div className="grid grid-cols-6 grid-rows-5 gap-1">
                 <div className="col-span-2 row-span-5 col-start-2 w-[500px] h-[700px]">
                     <div className="flex flex-col items-center justify-center h-full">
-                        <form className="w-[80%] space-y-6" onSubmit={handleSubmit} onChange={handleChange}>
+                        <form className="w-[80%] space-y-6" onSubmit={handleSubmit}>
                             <div className="space-y-2">
                                 <label htmlFor="nickname" className="block text-sm font-bold">
                                     Nickname
@@ -31,6 +48,8 @@ const LoginForm = () => {
                                     name="nickname"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00ffff]"
                                     placeholder="Ingresa tu nickname"
+                                    value={nombre}
+                                    onChange={handleChange}
                                 />
                             </div>
 
