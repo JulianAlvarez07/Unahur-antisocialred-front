@@ -49,7 +49,7 @@ const Navbar = () => {
               </li>
               <li>
                 <Link
-                  to="/login"
+                  to={usuario ? "/perfil" : "/login"}
                   className="text-white px-3 py-2 rounded-md text-sm lg:text-base hover:text-cyan-400 hover:bg-white hover:bg-opacity-10 transition-all duration-300"
                 >
                   {usuario?.nickName || "Login"}
@@ -101,7 +101,7 @@ const Navbar = () => {
                 Publicaciones
               </Link>
               <Link
-                to="/login"
+                to={usuario ? "/perfil" : "/login"}
                 className="text-white block px-3 py-2 rounded-md text-base hover:text-cyan-400 hover:bg-white hover:bg-opacity-10 transition-all duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
