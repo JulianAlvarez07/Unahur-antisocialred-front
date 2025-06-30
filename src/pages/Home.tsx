@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthProvider";
 import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
@@ -6,6 +5,10 @@ import { useEffect, useState } from "react";
 import { Post, User, Tag } from "@/types/interfaces";
 import { MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
+import { Tendencias } from "@/components/homeComponents/Tendencias";
+import { Estadisticas } from "@/components/homeComponents/Estadisticas";
+import { DatosCuriosos } from "@/components/homeComponents/DatosCuriosos";
+import { CallToActionRegistro } from "@/components/homeComponents/CallToActionRegistro";
 
 const TypewriterText = ({ text }: { text: string }) => {
   return (
@@ -13,7 +16,7 @@ const TypewriterText = ({ text }: { text: string }) => {
       initial={{ width: 0 }}
       animate={{ width: "100%" }}
       transition={{
-        duration: 2,
+        duration: 1.5,
         ease: "easeOut",
       }}
       className="inline-block whitespace-nowrap overflow-hidden"
@@ -67,7 +70,8 @@ const Home = () => {
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar los datos: ${error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar los datos: ${
+          error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -83,7 +87,7 @@ const Home = () => {
           {/* Banner de bienvenida */}
           <div className="bg-secondary text-white p-4 md:p-6 rounded-lg border-2 border-dashed border-[#14b8a6] shadow-[0_10px_30px_-10px_rgba(20,184,166,0.3),0_10px_40px_-15px_rgba(26,41,66,0.35)]">
             <div className="flex items-center justify-between mb-4">
-              <h1 className="text-xl md:text-2xl lg:text-4xl font-bold font-libertinus-mono">
+              <h1 className="text-xl md:text-2xl lg:text-4xl font-bold font-mono">
                 <TypewriterText text="¡Bienvenido a UnaHur Anti-Social Net!" />
               </h1>
               <MessageSquare className="w-6 h-6 text-[#14b8a6]" />
@@ -93,7 +97,7 @@ const Home = () => {
               className="text-sm md:text-base lg:text-lg opacity-90 mt-4"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 0.9, x: 0 }}
-              transition={{ duration: 0.5, delay: 2 }}
+              transition={{ duration: 0.5, delay: 1 }}
             >
               {usuario
                 ? `Hola ${usuario.nickName}, ¿qué estás pensando hoy?`
@@ -124,40 +128,7 @@ const Home = () => {
           )}
 
           {/* Call to action para usuarios no logueados */}
-          {!usuario && (
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 md:p-8 text-center">
-              <div className="max-w-md mx-auto">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    className="w-6 h-6 md:w-8 md:h-8 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-2">
-                  ¡Únete a la conversación!
-                </h3>
-                <p className="text-sm md:text-base text-gray-600 mb-4">
-                  Inicia sesión para crear publicaciones y conectar con otros
-                  CRUDos
-                </p>
-                <Link
-                  to="/"
-                  className="inline-block bg-secondary text-white px-4 md:px-6 py-2 md:py-3 rounded-md hover:bg-blue-700 transition-colors font-medium text-sm md:text-base"
-                >
-                  Iniciar Sesión
-                </Link>
-              </div>
-            </div>
-          )}
+          {!usuario && <CallToActionRegistro />}
 
           {/* Feed de publicaciones */}
           <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
@@ -196,7 +167,11 @@ const Home = () => {
                         }
                         content={post.contenido}
                         comments={adaptedComments}
-                        setPosts={setPosts}
+                        setPosts={
+                          setPosts as React.Dispatch<
+                            React.SetStateAction<Post[]>
+                          >
+                        }
                       />
                     );
                   })}
@@ -222,139 +197,14 @@ const Home = () => {
 
         {/* Sidebar derecho */}
         <aside className="lg:col-span-1 space-y-4 md:space-y-6">
-          {/* Tendencias */}
-          <div className="bg-secondary rounded-lg shadow-md">
-            <div className="p-3 md:p-4 border-b border-[#14b8a6]">
-              <h2 className="text-lg md:text-xl font-bold text-white font-libertinus-mono">
-                🔥 Tendencias
-              </h2>
-            </div>
-            <div className="p-3 md:p-4 space-y-2 md:space-y-3">
-              {loading ? (
-                <div className="text-center py-4">
-                  <p className="text-white text-sm">Cargando tendencias...</p>
-                </div>
-              ) : tags.length > 0 ? (
-                tags.map((tag) => (
-                  <div
-                    key={tag.id}
-                    className="flex justify-between items-center py-2 hover:bg-blue-600 hover:bg-opacity-20 rounded px-2 transition-colors"
-                  >
-                    <span className="text-white font-medium text-sm md:text-base">
-                      #{tag.nombreEtiqueta}
-                    </span>
-                    <span className="text-secondary text-xs bg-opacity-20 px-2 py-1 rounded-full">
-                      Tag
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-4">
-                  <p className="text-white text-sm">No hay tags disponibles</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Estadísticas */}
-          <div className="bg-white rounded-lg shadow-md border border-gray-200">
-            <div className="p-3 md:p-4 border-b border-gray-200">
-              <h2 className="text-lg md:text-xl font-bold font-libertinus-mono">
-                📊 CRUDos Stats
-              </h2>
-            </div>
-            <div className="p-3 md:p-4 space-y-3 md:space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm md:text-base">
-                  👥 Miembros registrados
-                </span>
-                <span className="font-bold text-secondary">
-                  {loading ? "..." : users.length}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm md:text-base">
-                  📝 Publicaciones
-                </span>
-                <span className="font-bold text-secondary">
-                  {loading ? "..." : posts.length}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm md:text-base">
-                  💬 Comentarios
-                </span>
-                <span className="font-bold text-secondary">
-                  {loading
-                    ? "..."
-                    : posts.reduce(
-                      (total, post) => total + (post.comment?.length || 0),
-                      0
-                    )}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm md:text-base">
-                  🏷️ Tags disponibles
-                </span>
-                <span className="font-bold text-secondary">
-                  {loading ? "..." : tags.length}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Datos curiosos */}
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg shadow-md border border-gray-200">
-            <div className="p-3 md:p-4 border-b border-gray-200">
-              <h2 className="text-lg md:text-xl font-bold font-libertinus-mono">
-                💡 ¿Sabías que...?
-              </h2>
-            </div>
-            <div className="p-3 md:p-4 space-y-3 md:space-y-4 text-sm">
-              <div className="bg-white p-2 md:p-3 rounded-lg border-l-4 border-secondary">
-                <p className="font-medium text-gray-800">CRUD significa:</p>
-                <p className="text-gray-600">Create, Read, Update, Delete</p>
-              </div>
-              <div className="bg-white p-2 md:p-3 rounded-lg border-l-4 border-green-500">
-                <p className="font-medium text-gray-800">
-                  React fue creado por:
-                </p>
-                <p className="text-gray-600">Facebook (Meta) en 2013</p>
-              </div>
-              <div className="bg-white p-2 md:p-3 rounded-lg border-l-4 border-purple-500">
-                <p className="font-medium text-gray-800">
-                  Somos "Anti-Social" porque:
-                </p>
-                <p className="text-gray-600">
-                  Valoramos calidad sobre cantidad
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Call to action para no autenticados */}
-          {!usuario && (
-            <div className="bg-gradient-to-br from-secondary to-blue-600 rounded-lg shadow-md text-white">
-              <div className="p-4 md:p-6 text-center">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-xl md:text-2xl">🚀</span>
-                </div>
-                <h3 className="font-bold mb-2 text-sm md:text-base">
-                  ¿Listo para unirte?
-                </h3>
-                <p className="text-xs md:text-sm opacity-90 mb-4">
-                  Regístrate y forma parte de Los CRUDos
-                </p>
-                <Link
-                  to="/register"
-                  className="inline-block bg-white text-secondary px-3 md:px-4 py-1.5 md:py-2 rounded-md hover:bg-gray-100 transition-colors font-medium text-xs md:text-sm"
-                >
-                  Registrarse
-                </Link>
-              </div>
-            </div>
-          )}
+          <Tendencias tags={tags} loading={loading} />
+          <Estadisticas
+            loading={loading}
+            users={users}
+            posts={posts}
+            tags={tags}
+          />
+          <DatosCuriosos loading={loading} users={users} posts={posts} />
         </aside>
       </div>
     </div>
