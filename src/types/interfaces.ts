@@ -50,4 +50,5 @@ export interface CommentForComponent {
 
 export interface UserForComponent {
   nickName: string;
+  nombre: string;
 }

@@ -1,21 +1,38 @@
+import { MessageSquare } from "lucide-react";
+
 const Footer = () => {
   return (
-    <footer className="mt-auto py-4 md:py-6 border-t border-text-accent bg-white">
+    <footer className="mt-auto py-6 bg-gradient-to-r from-[#1a2942] to-[#2c3e50] border-t border-white/10">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-          <p className="text-primary text-sm md:text-base text-center md:text-left">
-            &copy; 2025 UnaHur Anti-Social Net - Los CRUDos
-          </p>
-          <div className="flex flex-wrap gap-2 md:gap-4 justify-center md:justify-end">
-            <a href="#" className="text-primary hover:text-accent transition-colors text-sm md:text-base">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="flex items-center gap-2 text-cyan-400">
+            <MessageSquare className="w-5 h-5" />
+            <span className="font-semibold">UnaHur Anti-Social Net</span>
+          </div>
+
+          <div className="flex flex-wrap gap-6 justify-center">
+            <a
+              href="#"
+              className="text-gray-300 hover:text-cyan-400 transition-all duration-300 text-sm"
+            >
               Términos
             </a>
-            <a href="#" className="text-primary hover:text-accent transition-colors text-sm md:text-base">
+            <a
+              href="#"
+              className="text-gray-300 hover:text-cyan-400 transition-all duration-300 text-sm"
+            >
               Privacidad
             </a>
-            <a href="#" className="text-primary hover:text-accent transition-colors text-sm md:text-base">
+            <a
+              href="#"
+              className="text-gray-300 hover:text-cyan-400 transition-all duration-300 text-sm"
+            >
               Contacto
             </a>
+          </div>
+
+          <div className="flex items-center gap-2 text-gray-400 text-sm">
+            <span>hecho por Los CRUDos &copy; 2025</span>
           </div>
         </div>
       </div>
