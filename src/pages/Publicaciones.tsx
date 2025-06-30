@@ -33,7 +33,8 @@ const Publicaciones = () => {
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar las publicaciones: ${error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar las publicaciones: ${
+          error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -57,7 +58,7 @@ const Publicaciones = () => {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-6 md:py-8">
-        <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">
+        <h1 className="text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8 font-mono">
           Publicaciones
         </h1>
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm md:text-base">
@@ -69,7 +70,7 @@ const Publicaciones = () => {
 
   return (
     <div className="container mx-auto px-4 py-6 md:py-8">
-      <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">
+      <h1 className="text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8 font-mono">
         Publicaciones
       </h1>
 

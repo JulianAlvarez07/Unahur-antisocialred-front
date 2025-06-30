@@ -1,5 +1,9 @@
 import CommentCard from "./CommentCard";
-import { UserForComponent, CommentForComponent } from "@/types/interfaces";
+import {
+  UserForComponent,
+  CommentForComponent,
+  Post,
+} from "@/types/interfaces";
 import CommentForm from "./CommentForm";
 
 interface PostCardProps {
@@ -7,11 +11,16 @@ interface PostCardProps {
   user: UserForComponent;
   comments: CommentForComponent[];
   postId: number;
-  setPosts: React.Dispatch<React.SetStateAction<[]>>;
-
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
 }
 
-const PostCard = ({ user, content, comments, postId, setPosts }: PostCardProps) => {
+const PostCard = ({
+  user,
+  content,
+  comments,
+  postId,
+  setPosts,
+}: PostCardProps) => {
   console.log(postId, "desde postcard");
 
   return (
