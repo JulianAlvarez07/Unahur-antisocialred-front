@@ -49,8 +49,7 @@ const Home = () => {
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar los datos: ${
-          error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar los datos: ${error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -167,6 +166,7 @@ const Home = () => {
                       user={post.user || { nickName: `Usuario ${post.userId}` }}
                       content={post.contenido}
                       comments={adaptedComments}
+                      postId={post.id}
                     />
                   );
                 })}
@@ -257,9 +257,9 @@ const Home = () => {
                   {loading
                     ? "..."
                     : posts.reduce(
-                        (total, post) => total + (post.comment?.length || 0),
-                        0
-                      )}
+                      (total, post) => total + (post.comment?.length || 0),
+                      0
+                    )}
                 </span>
               </div>
               <div className="flex justify-between items-center">
