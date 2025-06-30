@@ -16,18 +16,27 @@ const Publicaciones = () => {
       console.log("Intentando cargar publicaciones...");
       // Obtener posts (ya incluyen comentarios y usuario)
       const postsResponse = await fetch("http://localhost:3001/post");
-      console.log("Respuesta de posts:", postsResponse.status, postsResponse.statusText);
+      console.log(
+        "Respuesta de posts:",
+        postsResponse.status,
+        postsResponse.statusText
+      );
 
       if (!postsResponse.ok) {
-        throw new Error(`Error ${postsResponse.status}: ${postsResponse.statusText}`);
+        throw new Error(
+          `Error ${postsResponse.status}: ${postsResponse.statusText}`
+        );
       }
       const postsData = await postsResponse.json();
       console.log("Posts cargados:", postsData);
       setPosts(postsData);
-
     } catch (error) {
       console.error("Error detallado:", error);
-      setError(`Error al cargar las publicaciones: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      setError(
+        `Error al cargar las publicaciones: ${
+          error instanceof Error ? error.message : "Error desconocido"
+        }`
+      );
     } finally {
       setLoading(false);
     }
@@ -36,7 +45,9 @@ const Publicaciones = () => {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-6 md:py-8">
-        <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">Publicaciones</h1>
+        <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">
+          Publicaciones
+        </h1>
         <div className="text-center">
           <p className="text-sm md:text-base">Cargando publicaciones...</p>
         </div>
@@ -47,7 +58,9 @@ const Publicaciones = () => {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-6 md:py-8">
-        <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">Publicaciones</h1>
+        <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">
+          Publicaciones
+        </h1>
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm md:text-base">
           {error}
         </div>
@@ -57,14 +70,16 @@ const Publicaciones = () => {
 
   return (
     <div className="container mx-auto px-4 py-6 md:py-8">
-      <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">Publicaciones</h1>
+      <h1 className="font-titulo text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8">
+        Publicaciones
+      </h1>
 
-      <div className="space-y-4 md:space-y-6">
+      <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
         {posts.map((post) => {
           // Convertir comentarios al formato esperado por PostCard
-          const adaptedComments = post.comment.map(comment => ({
+          const adaptedComments = post.comment.map((comment) => ({
             userId: comment.userIdComment,
-            contenido: comment.comentario
+            contenido: comment.comentario,
           }));
 
           return (
@@ -77,13 +92,15 @@ const Publicaciones = () => {
             />
           );
         })}
-      </div>
 
-      {posts.length === 0 && (
-        <div className="text-center py-6 md:py-8">
-          <p className="text-gray-500 text-sm md:text-base">No hay publicaciones disponibles.</p>
-        </div>
-      )}
+        {posts.length === 0 && (
+          <div className="text-center py-6 md:py-8">
+            <p className="text-gray-500 text-sm md:text-base">
+              No hay publicaciones disponibles.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

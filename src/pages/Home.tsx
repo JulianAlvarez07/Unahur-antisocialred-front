@@ -4,6 +4,24 @@ import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
 import { useEffect, useState } from "react";
 import { Post, User, Tag } from "@/types/interfaces";
+import { MessageSquare } from "lucide-react";
+import { motion } from "framer-motion";
+
+const TypewriterText = ({ text }: { text: string }) => {
+  return (
+    <motion.span
+      initial={{ width: 0 }}
+      animate={{ width: "100%" }}
+      transition={{
+        duration: 2,
+        ease: "easeOut",
+      }}
+      className="inline-block whitespace-nowrap overflow-hidden"
+    >
+      {text}
+    </motion.span>
+  );
+};
 
 const Home = () => {
   const auth = useAuth();
@@ -49,7 +67,8 @@ const Home = () => {
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar los datos: ${error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar los datos: ${
+          error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -63,15 +82,24 @@ const Home = () => {
         {/* Sección Principal */}
         <main className="lg:col-span-3 space-y-6">
           {/* Banner de bienvenida */}
-          <div className="bg-secondary text-white p-4 md:p-6 rounded-lg shadow-lg">
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2">
-              ¡Bienvenido a UnaHur Anti-Social Net!
-            </h1>
-            <p className="text-sm md:text-base lg:text-lg opacity-90">
+          <div className="bg-secondary text-white p-4 md:p-6 rounded-lg border-2 border-dashed border-[#14b8a6] shadow-[0_10px_30px_-10px_rgba(20,184,166,0.3),0_10px_40px_-15px_rgba(26,41,66,0.35)]">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-xl md:text-2xl lg:text-4xl font-bold font-libertinus-mono">
+                <TypewriterText text="¡Bienvenido a UnaHur Anti-Social Net!" />
+              </h1>
+              <MessageSquare className="w-6 h-6 text-[#14b8a6]" />
+            </div>
+
+            <motion.p
+              className="text-sm md:text-base lg:text-lg opacity-90 mt-4"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 0.9, x: 0 }}
+              transition={{ duration: 0.5, delay: 2 }}
+            >
               {usuario
                 ? `Hola ${usuario.nickName}, ¿qué estás pensando hoy?`
                 : "La red social donde menos social, más auténtico. Conectate con Los CRUDos."}
-            </p>
+            </motion.p>
           </div>
 
           {/* Crear nueva publicación - Solo si está logueado */}
@@ -133,8 +161,8 @@ const Home = () => {
           )}
 
           {/* Feed de publicaciones */}
-          <div className="space-y-4 md:space-y-6">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-800">
+          <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800 text-center font-libertinus-mono">
               Publicaciones recientes
             </h2>
 
@@ -145,7 +173,7 @@ const Home = () => {
             )}
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm md:text-base">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm md:text-base text-center">
                 {error}
               </div>
             )}
@@ -153,37 +181,40 @@ const Home = () => {
             {!loading && !error && (
               <>
                 {/* Todas las publicaciones */}
-                {posts.map((post) => {
-                  // Convertir comentarios al formato esperado por PostCard
-                  const adaptedComments = post.comment.map((comment) => ({
-                    userId: comment.userIdComment,
-                    contenido: comment.comentario,
-                  }));
+                <div className="space-y-6">
+                  {posts.map((post) => {
+                    const adaptedComments = post.comment.map((comment) => ({
+                      userId: comment.userIdComment,
+                      contenido: comment.comentario,
+                    }));
 
-                  return (
-                    <PostCard
-                      key={post.id}
-                      user={post.user || { nickName: `Usuario ${post.userId}` }}
-                      content={post.contenido}
-                      comments={adaptedComments}
-                      postId={post.id}
-                    />
-                  );
-                })}
+                    return (
+                      <PostCard
+                        key={post.id}
+                        postId={post.id}
+                        user={
+                          post.user || { nickName: `Usuario ${post.userId}` }
+                        }
+                        content={post.contenido}
+                        comments={adaptedComments}
+                      />
+                    );
+                  })}
 
-                {posts.length === 0 && !loading && (
-                  <div className="text-center py-8">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl">📝</span>
+                  {posts.length === 0 && !loading && (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span className="text-2xl">📝</span>
+                      </div>
+                      <p className="text-gray-500 text-lg">
+                        No hay publicaciones disponibles
+                      </p>
+                      <p className="text-gray-400 text-sm">
+                        ¡Sé el primero en publicar algo!
+                      </p>
                     </div>
-                    <p className="text-gray-500 text-lg">
-                      No hay publicaciones disponibles
-                    </p>
-                    <p className="text-gray-400 text-sm">
-                      ¡Sé el primero en publicar algo!
-                    </p>
-                  </div>
-                )}
+                  )}
+                </div>
               </>
             )}
           </div>
@@ -193,8 +224,8 @@ const Home = () => {
         <aside className="lg:col-span-1 space-y-4 md:space-y-6">
           {/* Tendencias */}
           <div className="bg-secondary rounded-lg shadow-md">
-            <div className="p-3 md:p-4 border-b border-blue-600">
-              <h2 className="text-lg md:text-xl font-bold text-white">
+            <div className="p-3 md:p-4 border-b border-[#14b8a6]">
+              <h2 className="text-lg md:text-xl font-bold text-white font-libertinus-mono">
                 🔥 Tendencias
               </h2>
             </div>
@@ -212,7 +243,7 @@ const Home = () => {
                     <span className="text-white font-medium text-sm md:text-base">
                       #{tag.nombreEtiqueta}
                     </span>
-                    <span className="text-xs text-gray-200 bg-white bg-opacity-20 px-2 py-1 rounded-full">
+                    <span className="text-secondary text-xs bg-opacity-20 px-2 py-1 rounded-full">
                       Tag
                     </span>
                   </div>
@@ -228,7 +259,7 @@ const Home = () => {
           {/* Estadísticas */}
           <div className="bg-white rounded-lg shadow-md border border-gray-200">
             <div className="p-3 md:p-4 border-b border-gray-200">
-              <h2 className="text-lg md:text-xl font-bold text-gray-800">
+              <h2 className="text-lg md:text-xl font-bold font-libertinus-mono">
                 📊 CRUDos Stats
               </h2>
             </div>
@@ -257,9 +288,9 @@ const Home = () => {
                   {loading
                     ? "..."
                     : posts.reduce(
-                      (total, post) => total + (post.comment?.length || 0),
-                      0
-                    )}
+                        (total, post) => total + (post.comment?.length || 0),
+                        0
+                      )}
                 </span>
               </div>
               <div className="flex justify-between items-center">
@@ -276,7 +307,7 @@ const Home = () => {
           {/* Datos curiosos */}
           <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg shadow-md border border-gray-200">
             <div className="p-3 md:p-4 border-b border-gray-200">
-              <h2 className="text-lg md:text-xl font-bold text-gray-800">
+              <h2 className="text-lg md:text-xl font-bold font-libertinus-mono">
                 💡 ¿Sabías que...?
               </h2>
             </div>
