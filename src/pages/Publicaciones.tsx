@@ -17,7 +17,7 @@ const Publicaciones = () => {
       // Obtener posts (ya incluyen comentarios y usuario)
       const postsResponse = await fetch("http://localhost:3001/post");
       console.log("Respuesta de posts:", postsResponse.status, postsResponse.statusText);
-      
+
       if (!postsResponse.ok) {
         throw new Error(`Error ${postsResponse.status}: ${postsResponse.statusText}`);
       }
@@ -66,13 +66,14 @@ const Publicaciones = () => {
             userId: comment.userIdComment,
             contenido: comment.comentario
           }));
-          
+
           return (
             <PostCard
               key={post.id}
               user={post.user || { nickName: `Usuario ${post.userId}` }}
               content={post.contenido}
               comments={adaptedComments}
+              postId={post.id}
             />
           );
         })}

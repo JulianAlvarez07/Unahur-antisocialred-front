@@ -1,14 +1,16 @@
 import CommentCard from "./CommentCard";
 import { UserForComponent, CommentForComponent } from "@/types/interfaces";
+import CommentForm from "./CommentForm";
 
 interface PostCardProps {
     content: string;
     user: UserForComponent;
     comments: CommentForComponent[];
+    postId: number;
 }
 
-const PostCard = ({ user, content, comments }: PostCardProps) => {
-
+const PostCard = ({ user, content, comments, postId }: PostCardProps) => {
+    console.log(postId, 'desde postcard');
 
     return (
         <div className="bg-white rounded-lg shadow-md border border-gray-200 p-3 md:p-6 mb-4 w-full">
@@ -33,6 +35,7 @@ const PostCard = ({ user, content, comments }: PostCardProps) => {
 
             {/* Sección de comentarios */}
             <div className="pt-2 md:pt-3 border-t border-gray-100">
+                <CommentForm postId={postId} />
                 <h4 className="font-semibold text-gray-700 mb-2 md:mb-3 text-sm md:text-base">
                     Comentarios {comments && comments.length > 0 && `(${comments.length})`}
                 </h4>
