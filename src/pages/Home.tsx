@@ -67,8 +67,7 @@ const Home = () => {
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar los datos: ${
-          error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar los datos: ${error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -197,6 +196,7 @@ const Home = () => {
                         }
                         content={post.contenido}
                         comments={adaptedComments}
+                        setPosts={setPosts}
                       />
                     );
                   })}
@@ -288,9 +288,9 @@ const Home = () => {
                   {loading
                     ? "..."
                     : posts.reduce(
-                        (total, post) => total + (post.comment?.length || 0),
-                        0
-                      )}
+                      (total, post) => total + (post.comment?.length || 0),
+                      0
+                    )}
                 </span>
               </div>
               <div className="flex justify-between items-center">

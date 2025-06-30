@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthProvider';
 
-const CommentForm = ({ postId }: { postId: number }) => {
+const CommentForm = ({ postId, setPosts }: { postId: number, setPosts: React.Dispatch<React.SetStateAction<Post[]>> }) => {
     const [isFormVisible, setIsFormVisible] = useState(false);
     const [comment, setComment] = useState('');
     const auth = useAuth();
@@ -27,9 +27,20 @@ const CommentForm = ({ postId }: { postId: number }) => {
                 body: JSON.stringify(comentario),
             });
             if (response.ok) {
+                const savedComment = await response.json();
                 setComment('');
                 setIsFormVisible(false);
 
+                setPosts(prevPosts =>
+                    prevPosts.map(post =>
+                        post.id === postId
+                            ? {
+                                ...post,
+                                comment: [...post.comment, savedComment],
+                            }
+                            : post
+                    )
+                );
             } else {
                 console.error('Error al enviar el comentario:', response.status);
             }

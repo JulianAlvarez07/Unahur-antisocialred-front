@@ -29,6 +29,7 @@ export interface Post {
   comment: Comment[];
   post_images?: PostImage[];
   tags?: Tag[];
+
 }
 
 export interface Tag {

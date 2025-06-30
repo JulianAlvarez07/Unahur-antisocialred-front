@@ -7,9 +7,11 @@ interface PostCardProps {
   user: UserForComponent;
   comments: CommentForComponent[];
   postId: number;
+  setPosts: React.Dispatch<React.SetStateAction<[]>>;
+
 }
 
-const PostCard = ({ user, content, comments, postId }: PostCardProps) => {
+const PostCard = ({ user, content, comments, postId, setPosts }: PostCardProps) => {
   console.log(postId, "desde postcard");
 
   return (
@@ -40,7 +42,7 @@ const PostCard = ({ user, content, comments, postId }: PostCardProps) => {
 
       {/* Sección de comentarios */}
       <div className="pt-2 md:pt-3 border-t border-gray-100">
-        <CommentForm postId={postId} />
+        <CommentForm postId={postId} setPosts={setPosts} />
         <h4 className="font-semibold text-gray-700 mb-2 md:mb-3 text-sm md:text-base">
           Comentarios{" "}
           {comments && comments.length > 0 && `(${comments.length})`}
