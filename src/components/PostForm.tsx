@@ -102,7 +102,7 @@ const PostForm = () => {
             onChange={(e) => setContenido(e.target.value)}
             rows={4}
             maxLength={2000}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-[#14b8a6] resize-none text-sm md:text-base"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:border-[#14b8a6] resize-none text-sm md:text-base hover:border-blue-500 transition-colors"
             placeholder="Escribe tu publicación aquí..."
           />
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-1 space-y-1 sm:space-y-0">

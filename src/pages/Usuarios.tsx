@@ -28,6 +28,7 @@ const Usuarios = () => {
   const [usuarios, setUsuarios] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchUsuarios = async () => {
@@ -61,6 +62,11 @@ const Usuarios = () => {
 
     fetchUsuarios();
   }, []);
+
+  // Filtrar usuarios por nickname en tiempo real (solo si empieza con el texto buscado)
+  const filteredUsuarios = usuarios.filter((usuario) =>
+    usuario.nickName.toLowerCase().startsWith(search.toLowerCase())
+  );
 
   if (loading) {
     return (
@@ -99,13 +105,24 @@ const Usuarios = () => {
         Usuarios
       </motion.h1>
 
+      {/* Barra de búsqueda */}
+      <div className="flex justify-center mb-6">
+        <input
+          type="text"
+          placeholder="Buscar por nickname..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+        />
+      </div>
+
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
       >
-        {usuarios.map((usuario) => (
+        {filteredUsuarios.map((usuario) => (
           <motion.div
             key={usuario.id}
             variants={item}
@@ -134,7 +151,7 @@ const Usuarios = () => {
         ))}
       </motion.div>
 
-      {usuarios.length === 0 && (
+      {filteredUsuarios.length === 0 && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
