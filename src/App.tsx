@@ -6,11 +6,12 @@ import Layout from "@/components/Layout";
 const AppContent = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === "/";
+  const isRegisterPage = location.pathname === "/register";
 
   return (
     <AuthProvider>
       <div className="min-h-screen">
-        {isLoginPage ? (
+        {isLoginPage || isRegisterPage ? (
           <AppRouter />
         ) : (
           <Layout>

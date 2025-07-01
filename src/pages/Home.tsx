@@ -49,7 +49,15 @@ const Home = () => {
       if (postsResponse.ok) {
         const postsData = await postsResponse.json();
 
-        setPosts(postsData);
+        // Pone las ultimas publicaciones al principio
+        const sortedPosts = postsData
+          .sort(
+            (a: Post, b: Post) =>
+              new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+          )
+          .slice(0, 10);
+
+        setPosts(sortedPosts);
       }
 
       // Obtener usuarios
@@ -70,7 +78,8 @@ const Home = () => {
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar los datos: ${error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar los datos: ${
+          error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -99,7 +108,9 @@ const Home = () => {
               transition={{ duration: 0.5, delay: 1 }}
             >
               {usuario
-                ? `Hola ${usuario.nickName}, ¿qué estás pensando hoy?`
+                ? `Hola ${
+                    usuario.nombre.split(" ")[0]
+                  }, contá lo que quieras y probá tus habilidades CRUD.`
                 : "La red social donde menos social, más auténtico. Conectate con Los CRUDos."}
             </motion.p>
           </div>
@@ -115,7 +126,7 @@ const Home = () => {
                 </div>
                 <div className="text-center sm:text-left">
                   <h2 className="text-lg md:text-xl font-semibold">
-                    ¿Qué estás pensando, {usuario.nickName}?
+                    ¿Qué estás pensando, {usuario.nombre.split(" ")[0]}?
                   </h2>
                   <p className="text-sm text-gray-500">
                     Comparte tus ideas con la comunidad CRUDos
