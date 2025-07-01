@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthProvider';
+import { Post } from '@/types/interfaces';
 
 const CommentForm = ({ postId, setPosts }: { postId: number, setPosts: React.Dispatch<React.SetStateAction<Post[]>> }) => {
     const [isFormVisible, setIsFormVisible] = useState(false);
@@ -78,7 +79,7 @@ const CommentForm = ({ postId, setPosts }: { postId: number, setPosts: React.Dis
                             onChange={(e) => setComment(e.target.value)}
                             rows={3}
                             maxLength={500}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-sm md:text-base"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-500 transition-colors text-sm md:text-base resize-none"
                             placeholder="Escribe tu comentario aquí..."
                         />
                         <div className="flex justify-between items-center mt-1">

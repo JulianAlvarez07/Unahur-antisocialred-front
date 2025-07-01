@@ -8,7 +8,7 @@ const CommentCard = ({ comment }: CommentCardProps) => {
 
 
     return (
-        <div className="bg-gray-50 rounded-lg p-2 md:p-4 border border-gray-200">
+        <div className="bg-gray-50 rounded-lg p-2 md:p-4 border border-gray-200 hover:bg-blue-100 transition-colors">
             <div className="flex items-start space-x-2 md:space-x-3">
                 {/* Avatar del usuario del comentario */}
                 <div className="w-6 h-6 md:w-8 md:h-8 bg-secondary rounded-full flex items-center justify-center flex-shrink-0">
