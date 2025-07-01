@@ -1,5 +1,21 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthProvider";
+import { motion, Variants } from "framer-motion";
+
+const scaleIn: Variants = {
+  initial: {
+    opacity: 0,
+    scale: 0.95,
+  },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.3,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  },
+};
 
 const PostForm = () => {
   const [contenido, setContenido] = useState("");
@@ -33,14 +49,20 @@ const PostForm = () => {
         const data = await response.json();
         // Si hay imagen, asociarla al post
         if (imageUrl) {
-          const imageBody = JSON.stringify({ url: imageUrl, userId: usuario.id });
-          const imageResponse = await fetch(`http://localhost:3001/post/${data.id}/addImage`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: imageBody,
+          const imageBody = JSON.stringify({
+            url: imageUrl,
+            userId: usuario.id,
           });
+          const imageResponse = await fetch(
+            `http://localhost:3001/post/${data.id}/addImage`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: imageBody,
+            }
+          );
           if (imageResponse.ok) {
             console.log("Imagen agregada correctamente");
           } else {
@@ -61,10 +83,13 @@ const PostForm = () => {
     }
   };
   return (
-    <div className="w-full">
+    <motion.div {...scaleIn} className="w-full">
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Textarea for post content */}
-        <div>
+        <motion.div
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+        >
           <label
             htmlFor="contenido"
             className="block text-sm md:text-base font-medium mb-2"
@@ -90,9 +115,15 @@ const PostForm = () => {
               </span>
             )}
           </div>
-        </div>
+        </motion.div>
         {/*apartado con iconos para agregar imagenes y tags, ubicado en el borde derecho */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-200" id="add-images-tags">
+        <motion.div
+          initial={{ x: 20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.3 }}
+          className="flex items-center justify-between pt-4 border-t border-gray-200"
+          id="add-images-tags"
+        >
           {/* Icono para agregar imagen, alineado a la izquierda */}
           <div className="flex items-center">
             <button
@@ -102,8 +133,19 @@ const PostForm = () => {
               onClick={() => setShowImageInput((prev) => !prev)}
             >
               {/* SVG de imagen */}
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-600">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3.75A2.25 2.25 0 004.5 6v12a2.25 2.25 0 002.25 2.25h12A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H6.75zM4.5 16.5l4.72-4.72a2.25 2.25 0 013.18 0l6.1 6.1M15.75 9.75h.008v.008H15.75V9.75z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6 text-gray-600"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6.75 3.75A2.25 2.25 0 004.5 6v12a2.25 2.25 0 002.25 2.25h12A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H6.75zM4.5 16.5l4.72-4.72a2.25 2.25 0 013.18 0l6.1 6.1M15.75 9.75h.008v.008H15.75V9.75z"
+                />
               </svg>
             </button>
             {/* Input para la URL de la imagen */}
@@ -115,7 +157,7 @@ const PostForm = () => {
                   className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#14b8a6]"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  style={{ minWidth: '220px' }}
+                  style={{ minWidth: "220px" }}
                 />
                 {/* Previsualización opcional */}
                 {imageUrl && (
@@ -123,33 +165,41 @@ const PostForm = () => {
                     src={imageUrl}
                     alt="Previsualización"
                     className="mt-1 max-h-24 rounded border border-gray-200"
-                    onError={(e) => (e.currentTarget.style.display = 'none')}
+                    onError={(e) => (e.currentTarget.style.display = "none")}
                   />
                 )}
               </div>
             )}
           </div>
           {/* Aquí puedes agregar otros iconos alineados a la derecha si lo deseas */}
-        </div>
+        </motion.div>
         {/* Action buttons */}
-        <div className="flex items-center justify-end pt-4 border-t border-gray-200">
-          {/* Publish button */}
-          <button
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.3 }}
+          className="flex items-center justify-end pt-4 border-t border-gray-200"
+        >
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={!contenido.trim()}
             className={`
-                            px-4 md:px-6 py-2 md:py-3 rounded-md font-medium text-white transition-colors duration-200 text-sm md:text-base
-                            ${!contenido.trim()
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              px-4 md:px-6 py-2 md:py-3 rounded-md font-medium text-white
+              transition-all duration-300 ease-in-out
+              ${
+                !contenido.trim()
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-secondary hover:bg-[#14b8a6] hover:ring-2 hover:ring-[#14b8a6]/50 cursor-pointer"
               }
-                        `}
+            `}
           >
             Publicar
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

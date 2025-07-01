@@ -1,5 +1,6 @@
 import { BarChart3, Users, FileText, MessageSquare, Tags } from "lucide-react";
 import { Post, User, Tag } from "@/types/interfaces";
+import { motion } from "framer-motion";
 
 interface EstadisticasProps {
   loading: boolean;
@@ -7,6 +8,19 @@ interface EstadisticasProps {
   posts: Post[];
   tags: Tag[];
 }
+const fadeInUp = {
+  initial: {
+    opacity: 0,
+    y: 20,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+    },
+  },
+};
 
 export const Estadisticas = ({
   loading,
@@ -15,7 +29,10 @@ export const Estadisticas = ({
   tags,
 }: EstadisticasProps) => {
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-200">
+    <motion.div
+      {...fadeInUp}
+      className="bg-white rounded-lg shadow-md border border-gray-200"
+    >
       <div className="p-3 md:p-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <BarChart3 className="w-5 h-5" />
@@ -75,6 +92,6 @@ export const Estadisticas = ({
           </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

@@ -1,6 +1,21 @@
 import PostCard from "@/components/PostCard";
 import { useEffect, useState } from "react";
 import { Post } from "@/types/interfaces";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  initial: {
+    opacity: 0,
+    y: 20,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+    },
+  },
+};
 
 const Publicaciones = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -57,19 +72,19 @@ const Publicaciones = () => {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-6 md:py-8">
+      <motion.div {...fadeInUp} className="container mx-auto px-4 py-6 md:py-8">
         <h1 className="text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8 font-mono">
           Publicaciones
         </h1>
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm md:text-base">
           {error}
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 md:py-8">
+    <motion.div {...fadeInUp} className="container mx-auto px-4 py-6 md:py-8">
       <h1 className="text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8 font-mono">
         Publicaciones
       </h1>
@@ -102,7 +117,7 @@ const Publicaciones = () => {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

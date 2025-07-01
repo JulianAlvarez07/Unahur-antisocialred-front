@@ -2,6 +2,21 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { User, Post } from "@/types/interfaces";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  initial: {
+    opacity: 0,
+    y: 20,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+    },
+  },
+};
 
 const Perfil = () => {
   const auth = useAuth();
@@ -54,7 +69,8 @@ const Perfil = () => {
     } catch (error) {
       console.error("Error al cargar el perfil:", error);
       setError(
-        `Error al cargar el perfil: ${error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar el perfil: ${
+          error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -101,7 +117,10 @@ const Perfil = () => {
   return (
     <div className="container mx-auto px-4 py-6 md:py-8">
       {/* Header del Perfil */}
-      <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 md:p-8 mb-6">
+      <motion.div
+        {...fadeInUp}
+        className="bg-white rounded-lg shadow-md border border-gray-200 p-6 md:p-8 mb-6"
+      >
         <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
           {/* Avatar */}
           <div className="w-20 h-20 md:w-24 md:h-24 bg-secondary rounded-full flex items-center justify-center">
@@ -155,10 +174,13 @@ const Perfil = () => {
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Mis Publicaciones */}
-      <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 md:p-8 max-w-6xl">
+      <motion.div
+        {...fadeInUp}
+        className="bg-white rounded-lg shadow-md border border-gray-200 p-6 md:p-8 max-w-6xl"
+      >
         <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
           Mis Publicaciones ({userPosts.length})
         </h3>
@@ -254,7 +276,7 @@ const Perfil = () => {
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };
