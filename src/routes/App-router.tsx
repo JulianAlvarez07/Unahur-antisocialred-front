@@ -5,6 +5,7 @@ import Login from "@/pages/Login";
 import Home from "@/pages/Home";
 import Perfil from "@/pages/Perfil";
 import Register from "@/pages/Register";
+import PostDetail from "@/pages/PostDetail";
 
 const AppRouter = () => {
   return (
@@ -16,6 +17,7 @@ const AppRouter = () => {
       <Route path="/usuarios" element={<Usuarios />} />
       <Route path="/publicaciones" element={<Publicaciones />} />
       <Route path="/perfil" element={<Perfil />} />
+      <Route path="/post/:id" element={<PostDetail />} />
     </Routes>
   );
 };

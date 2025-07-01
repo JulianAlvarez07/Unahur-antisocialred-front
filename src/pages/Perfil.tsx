@@ -54,8 +54,7 @@ const Perfil = () => {
     } catch (error) {
       console.error("Error al cargar el perfil:", error);
       setError(
-        `Error al cargar el perfil: ${
-          error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar el perfil: ${error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -71,8 +70,7 @@ const Perfil = () => {
   };
 
   const handleVerMas = (postId: number) => {
-    // Por ahora navegar a publicaciones, se puede crear una vista de detalle específica después
-    navigate(`/publicaciones#post-${postId}`);
+    navigate(`/post/${postId}`);
   };
 
   if (!usuario) {
