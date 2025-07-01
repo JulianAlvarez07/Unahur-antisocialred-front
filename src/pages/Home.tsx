@@ -48,7 +48,7 @@ const Home = () => {
       const postsResponse = await fetch("http://localhost:3001/post");
       if (postsResponse.ok) {
         const postsData = await postsResponse.json();
-        console.log("Posts cargados:", postsData);
+
         setPosts(postsData);
       }
 
@@ -56,7 +56,7 @@ const Home = () => {
       const usersResponse = await fetch("http://localhost:3001/users");
       if (usersResponse.ok) {
         const usersData = await usersResponse.json();
-        console.log("Usuarios cargados:", usersData);
+
         setUsers(usersData);
       }
 
@@ -70,8 +70,7 @@ const Home = () => {
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar los datos: ${
-          error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar los datos: ${error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {

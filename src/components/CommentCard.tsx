@@ -5,7 +5,7 @@ interface CommentCardProps {
 }
 
 const CommentCard = ({ comment }: CommentCardProps) => {
-    console.log("CommentCard recibió:", comment);
+
 
     return (
         <div className="bg-gray-50 rounded-lg p-2 md:p-4 border border-gray-200">

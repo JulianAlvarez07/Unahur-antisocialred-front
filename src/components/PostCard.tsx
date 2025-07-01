@@ -21,7 +21,7 @@ const PostCard = ({
   postId,
   setPosts,
 }: PostCardProps) => {
-  console.log(postId, "desde postcard");
+
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-3 md:p-6 mb-4 w-full">

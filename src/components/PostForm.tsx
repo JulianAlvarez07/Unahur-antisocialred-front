@@ -3,6 +3,8 @@ import { useAuth } from "@/context/AuthProvider";
 
 const PostForm = () => {
   const [contenido, setContenido] = useState("");
+  const [showImageInput, setShowImageInput] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
   const auth = useAuth();
   const usuario = auth?.usuario;
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,9 +30,26 @@ const PostForm = () => {
       });
 
       if (response.ok) {
-        console.log("Post creado exitosamente");
+        const data = await response.json();
+        // Si hay imagen, asociarla al post
+        if (imageUrl) {
+          const imageBody = JSON.stringify({ url: imageUrl, userId: usuario.id });
+          const imageResponse = await fetch(`http://localhost:3001/post/${data.id}/addImage`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: imageBody,
+          });
+          if (imageResponse.ok) {
+            console.log("Imagen agregada correctamente");
+          } else {
+            console.error("Error al agregar la imagen");
+          }
+        }
         setContenido("");
-        // Opcional: recargar la página o navegar
+        setImageUrl("");
+        // cambiar por actualizar estado de posts
         window.location.reload();
       } else {
         console.error("Error al crear el post");
@@ -72,7 +91,46 @@ const PostForm = () => {
             )}
           </div>
         </div>
-
+        {/*apartado con iconos para agregar imagenes y tags, ubicado en el borde derecho */}
+        <div className="flex items-center justify-between pt-4 border-t border-gray-200" id="add-images-tags">
+          {/* Icono para agregar imagen, alineado a la izquierda */}
+          <div className="flex items-center">
+            <button
+              type="button"
+              className="mr-2 p-2 rounded hover:bg-gray-100 focus:outline-none"
+              title="Agregar imagen por URL"
+              onClick={() => setShowImageInput((prev) => !prev)}
+            >
+              {/* SVG de imagen */}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-600">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3.75A2.25 2.25 0 004.5 6v12a2.25 2.25 0 002.25 2.25h12A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H6.75zM4.5 16.5l4.72-4.72a2.25 2.25 0 013.18 0l6.1 6.1M15.75 9.75h.008v.008H15.75V9.75z" />
+              </svg>
+            </button>
+            {/* Input para la URL de la imagen */}
+            {showImageInput && (
+              <div className="flex flex-col items-end space-y-2">
+                <input
+                  type="url"
+                  placeholder="URL de la imagen"
+                  className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#14b8a6]"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  style={{ minWidth: '220px' }}
+                />
+                {/* Previsualización opcional */}
+                {imageUrl && (
+                  <img
+                    src={imageUrl}
+                    alt="Previsualización"
+                    className="mt-1 max-h-24 rounded border border-gray-200"
+                    onError={(e) => (e.currentTarget.style.display = 'none')}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+          {/* Aquí puedes agregar otros iconos alineados a la derecha si lo deseas */}
+        </div>
         {/* Action buttons */}
         <div className="flex items-center justify-end pt-4 border-t border-gray-200">
           {/* Publish button */}
@@ -81,11 +139,10 @@ const PostForm = () => {
             disabled={!contenido.trim()}
             className={`
                             px-4 md:px-6 py-2 md:py-3 rounded-md font-medium text-white transition-colors duration-200 text-sm md:text-base
-                            ${
-                              !contenido.trim()
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                            }
+                            ${!contenido.trim()
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              }
                         `}
           >
             Publicar
