@@ -138,7 +138,7 @@ const Home = () => {
                   </p>
                 </div>
               </motion.div>
-              <PostForm />
+              <PostForm tags={tags} />
             </div>
           )}
 

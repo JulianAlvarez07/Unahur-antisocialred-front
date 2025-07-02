@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { motion, Variants } from "framer-motion";
+import { Tag } from "@/types/interfaces";
 
 const scaleIn: Variants = {
   initial: {
@@ -17,13 +18,27 @@ const scaleIn: Variants = {
   },
 };
 
-const PostForm = () => {
+interface PostFormProps {
+  tags: Tag[];
+}
+
+const PostForm = ({ tags }: PostFormProps) => {
   const [contenido, setContenido] = useState("");
   const [showImageInput, setShowImageInput] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [imagesUrls, setImagesUrls] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [showTagSelector, setShowTagSelector] = useState(false);
   const auth = useAuth();
   const usuario = auth?.usuario;
-  const [imagesUrls, setImagesUrls] = useState<string[]>([]);
+
+  const handleTagToggle = (tagId: number) => {
+    setSelectedTags(prev => 
+      prev.includes(tagId) 
+        ? prev.filter(id => id !== tagId)
+        : [...prev, tagId]
+    );
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
     e.preventDefault();
@@ -49,6 +64,26 @@ const PostForm = () => {
 
       if (response.ok) {
         const data = await response.json();
+        const postId = data.id;
+
+        // Agregar tags al post
+        for (const tagId of selectedTags) {
+          try {
+            await fetch("http://localhost:3001/comment-tag", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                postId: postId,
+                tagId: tagId,
+              }),
+            });
+          } catch (error) {
+            console.error("Error al agregar tag:", error);
+          }
+        }
+
         // Subir todas las imágenes
         for (const url of imagesUrls) {
           if (url.trim()) {
@@ -73,6 +108,7 @@ const PostForm = () => {
         }
         setContenido("");
         setImagesUrls([]);
+        setSelectedTags([]);
         window.location.reload();
       } else {
         console.error("Error al crear el post");
@@ -185,7 +221,71 @@ const PostForm = () => {
             )}
           </div>
           {/* Aca va apartado para tags */}
+          <div className="flex items-center">
+            <button
+              type="button"
+              className="p-2 rounded hover:bg-gray-100 focus:outline-none"
+              title="Agregar tags"
+              onClick={() => setShowTagSelector(prev => !prev)}
+            >
+              {/* SVG de tag */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6 text-gray-600"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
+              </svg>
+            </button>
+          </div>
         </motion.div>
+
+        {/* Selector de tags */}
+        {showTagSelector && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="border border-gray-200 rounded-md p-4 bg-gray-50"
+          >
+            <h4 className="text-sm font-medium mb-2">Seleccionar tags:</h4>
+            {!tags || tags.length === 0 ? (
+              <div className="text-sm text-gray-500">
+                No hay tags disponibles. Puedes crear nuevos tags desde las "Tendencias" en la barra lateral.
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    onClick={() => handleTagToggle(tag.id)}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                      selectedTags.includes(tag.id)
+                        ? "bg-[#14b8a6] text-white"
+                        : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {tag.nombreEtiqueta}
+                  </button>
+                ))}
+              </div>
+            )}
+            {selectedTags.length > 0 && (
+              <div className="mt-2 text-sm text-gray-600">
+                Tags seleccionados: {selectedTags.length}
+              </div>
+            )}
+          </motion.div>
+        )}
         {/* Action buttons */}
         <motion.div
           initial={{ y: 20, opacity: 0 }}
