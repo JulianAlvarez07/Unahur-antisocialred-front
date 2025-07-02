@@ -69,7 +69,7 @@ const PostForm = ({ tags }: PostFormProps) => {
         // Agregar tags al post
         for (const tagId of selectedTags) {
           try {
-            await fetch("http://localhost:3001/comment-tag", {
+            await fetch("http://localhost:3001/comment-tags", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

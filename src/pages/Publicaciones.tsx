@@ -43,7 +43,8 @@ const Publicaciones = () => {
         );
       }
       const postsData = await postsResponse.json();
-      console.log("Posts cargados:", postsData);
+      console.log("Posts cargados en Publicaciones:", postsData);
+      console.log("Posts con tags:", postsData.filter((p: Post) => p.tags && p.tags.length > 0));
       setPosts(postsData);
     } catch (error) {
       console.error("Error detallado:", error);
@@ -105,6 +106,7 @@ const Publicaciones = () => {
               postId={post.id}
               setPosts={setPosts}
               postImages={post.post_images || []}
+              tags={post.tags || []}
             />
           );
         })}

@@ -48,6 +48,7 @@ const Home = () => {
       const postsResponse = await fetch("http://localhost:3001/post");
       if (postsResponse.ok) {
         const postsData = await postsResponse.json();
+        console.log("Posts con tags:", postsData); // Debug para ver si vienen los tags
 
         // Pone las ultimas publicaciones al principio
         const sortedPosts = postsData
@@ -188,6 +189,7 @@ const Home = () => {
                           >
                         }
                         postImages={post.post_images || []}
+                        tags={post.tags || []}
                       />
                     );
                   })}

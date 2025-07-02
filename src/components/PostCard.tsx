@@ -4,6 +4,7 @@ import {
   CommentForComponent,
   Post,
   PostImage,
+  Tag,
 } from "@/types/interfaces";
 import CommentForm from "./CommentForm";
 
@@ -14,6 +15,7 @@ interface PostCardProps {
   postId: number;
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
   postImages: PostImage[];
+  tags?: Tag[];
 }
 
 const PostCard = ({
@@ -23,8 +25,11 @@ const PostCard = ({
   postId,
   postImages,
   setPosts,
+  tags,
 }: PostCardProps) => {
-
+  
+  // Debug para ver los tags
+  console.log(`PostCard ${postId} - Tags recibidos:`, tags);
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-3 md:p-6 mb-4 w-full">
@@ -51,6 +56,35 @@ const PostCard = ({
           {content}
         </p>
       </div>
+
+      {/* Tags del post */}
+      {tags && tags.length > 0 && (
+        <div className="mb-3 md:mb-4">
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <span
+                key={tag.id}
+                className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-[#14b8a6] text-white"
+              >
+                <svg
+                  className="w-3 h-3 mr-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                  />
+                </svg>
+                {tag.nombreEtiqueta}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {postImages && postImages.length > 0 && (
         <div className="mb-3 md:mb-4">
