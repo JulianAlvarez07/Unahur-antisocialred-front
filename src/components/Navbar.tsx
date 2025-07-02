@@ -8,7 +8,6 @@ const Navbar = () => {
   const usuario = auth?.usuario;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-
   return (
     <nav className="bg-gradient-to-r from-[#1a2942] to-[#2c3e50] shadow-lg font-sans">
       <div className="container mx-auto px-4">

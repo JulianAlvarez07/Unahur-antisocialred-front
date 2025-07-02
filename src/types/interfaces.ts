@@ -9,6 +9,7 @@ export interface User {
   fechaNacimiento?: string;
   createdAt?: string;
   updatedAt?: string;
+  descripcion?: string; // Descripción guardada en localStorage
 }
 
 export interface Comment {
@@ -29,7 +30,6 @@ export interface Post {
   comment: Comment[];
   post_images?: PostImage[];
   tags?: Tag[];
-
 }
 
 export interface Tag {

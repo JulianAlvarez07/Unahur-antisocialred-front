@@ -3,6 +3,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { User, Post } from "@/types/interfaces";
 import { motion } from "framer-motion";
+import { Pencil } from "lucide-react";
 
 const fadeInUp = {
   initial: {
@@ -27,11 +28,13 @@ const Perfil = () => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isEditingDesc, setIsEditingDesc] = useState(false);
+  const [tempDescription, setTempDescription] = useState("");
 
   useEffect(() => {
     // Redirigir si no está logueado
     if (!usuario) {
-      navigate("/login");
+      navigate("/");
       return;
     }
 
@@ -52,7 +55,15 @@ const Perfil = () => {
       if (userResponse.ok) {
         const userData = await userResponse.json();
         console.log("Datos del usuario:", userData);
-        setUserProfile(userData);
+        // Cargar la descripción desde localStorage
+        const savedDesc = localStorage.getItem(
+          `user_description_${usuario.id}`
+        );
+        setUserProfile({
+          ...userData,
+          descripcion: savedDesc || "",
+        });
+        setTempDescription(savedDesc || "");
       }
 
       // Obtener posts del usuario
@@ -81,12 +92,30 @@ const Perfil = () => {
   const handleLogout = () => {
     if (confirm("¿Estás seguro de que deseas cerrar sesión?")) {
       auth?.setUsuario?.(null);
-      navigate("/login");
+      navigate("/");
     }
   };
 
   const handleVerMas = (postId: number) => {
     navigate(`/post/${postId}`);
+  };
+
+  const handleSaveDescription = () => {
+    if (usuario && tempDescription.trim()) {
+      localStorage.setItem(
+        `user_description_${usuario.id}`,
+        tempDescription.trim()
+      );
+      setUserProfile((prev) =>
+        prev ? { ...prev, descripcion: tempDescription.trim() } : null
+      );
+      setIsEditingDesc(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setTempDescription(userProfile?.descripcion || "");
+    setIsEditingDesc(false);
   };
 
   if (!usuario) {
@@ -137,6 +166,75 @@ const Perfil = () => {
             <h2 className="text-xl md:text-2xl text-secondary font-semibold mb-2">
               {usuario.nickName}
             </h2>
+            <div className="mb-6 relative">
+              {isEditingDesc ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <label
+                      htmlFor="description"
+                      className="text-sm font-medium text-gray-700"
+                    >
+                      Tu descripción
+                    </label>
+                    <span className="text-xs text-gray-500">
+                      {tempDescription.length}/500 caracteres
+                    </span>
+                  </div>
+                  <textarea
+                    id="description"
+                    value={tempDescription}
+                    onChange={(e) => setTempDescription(e.target.value)}
+                    maxLength={500}
+                    rows={4}
+                    placeholder="Escribe algo sobre ti..."
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition-colors resize-none"
+                  />
+                  <div className="flex justify-end space-x-2">
+                    <button
+                      onClick={handleCancelEdit}
+                      className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-400 hover:text-white rounded-md transition-colors cursor-pointer border border-gray-300"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={handleSaveDescription}
+                      disabled={!tempDescription.trim()}
+                      className={`px-3 py-1.5 text-sm text-white rounded-md transition-colors flex items-center gap-2 cursor-pointer
+                        ${
+                          !tempDescription.trim()
+                            ? "bg-gray-400 cursor-not-allowed"
+                            : "bg-secondary cursor-pointer"
+                        }`}
+                    >
+                      Guardar
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="group">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium text-gray-700">
+                      Descripción
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setTempDescription(userProfile?.descripcion || "");
+                        setIsEditingDesc(true);
+                      }}
+                      className="text-sm text-secondary transition-colors flex items-center gap-1 cursor-pointer"
+                    >
+                      <Pencil className="w-4 h-4" />
+                      {userProfile?.descripcion
+                        ? "Editar"
+                        : "Agregar descripción"}
+                    </button>
+                  </div>
+                  <p className="text-sm text-gray-600 min-h-[3rem] bg-gray-50 p-3 rounded-md">
+                    {userProfile?.descripcion || "No hay descripción"}
+                  </p>
+                </div>
+              )}
+            </div>
             <p className="text-sm md:text-base text-gray-600 mb-4">
               Miembro desde:{" "}
               {userProfile?.createdAt

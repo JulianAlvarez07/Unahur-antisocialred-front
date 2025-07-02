@@ -118,7 +118,12 @@ const Home = () => {
           {/* Crear nueva publicación - Solo si está logueado */}
           {usuario && (
             <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 md:p-6">
-              <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 mb-4 gap-2">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 mb-4 gap-2"
+              >
                 <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mx-auto sm:mx-0">
                   <span className="text-white font-bold text-lg">
                     {usuario.nickName.charAt(0).toUpperCase()}
@@ -132,7 +137,7 @@ const Home = () => {
                     Comparte tus ideas con la comunidad CRUDos
                   </p>
                 </div>
-              </div>
+              </motion.div>
               <PostForm />
             </div>
           )}
