@@ -3,7 +3,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { User, Post } from "@/types/interfaces";
 import { motion } from "framer-motion";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2, AlertCircle } from "lucide-react";
 
 const fadeInUp = {
   initial: {
@@ -30,6 +30,8 @@ const Perfil = () => {
   const [error, setError] = useState("");
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [tempDescription, setTempDescription] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     // Redirigir si no está logueado
@@ -116,6 +118,36 @@ const Perfil = () => {
   const handleCancelEdit = () => {
     setTempDescription(userProfile?.descripcion || "");
     setIsEditingDesc(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!usuario) return;
+
+    try {
+      setIsDeleting(true);
+      const response = await fetch(
+        `http://localhost:3001/users/${usuario.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        // Limpiar localStorage
+        localStorage.removeItem(`user_description_${usuario.id}`);
+        // Cerrar sesión
+        auth?.setUsuario?.(null);
+        navigate("/");
+      } else {
+        alert("Error al eliminar la cuenta. Por favor, intenta de nuevo.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al eliminar la cuenta. Por favor, intenta de nuevo.");
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
   };
 
   if (!usuario) {
@@ -262,17 +294,79 @@ const Perfil = () => {
             </div>
           </div>
 
-          {/* Botón de Logout */}
-          <div className="mt-4 md:mt-0">
+          {/* Botones de Cuenta */}
+          <div className="mt-4 md:mt-0 flex flex-col space-y-2">
             <button
               onClick={handleLogout}
               className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 cursor-pointer"
             >
               Cerrar Sesión
             </button>
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="bg-black hover:bg-red-700 hover:text-black text-white px-4 py-2 rounded-md font-medium transition-colors cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              Eliminar Cuenta
+            </button>
           </div>
         </div>
       </motion.div>
+
+      {/* Modal de Confirmación de Eliminación */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-lg p-6 max-w-md w-full"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <AlertCircle className="w-6 h-6 text-red-500" />
+              <h3 className="text-lg font-semibold text-gray-900">
+                Eliminar Cuenta
+              </h3>
+            </div>
+
+            <p className="text-gray-600 mb-6">
+              ¿Estás seguro de que deseas eliminar tu cuenta? Esta opcion
+              borrará todos tus datos y contenidos.
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+                className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-400 hover:text-white rounded-md transition-colors cursor-pointer border border-gray-300"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+                className={`px-4 py-2 text-white rounded-md transition-colors flex items-center gap-2 cursor-pointer
+                  ${
+                    isDeleting
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-red-600 hover:bg-red-700"
+                  }`}
+              >
+                {isDeleting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Eliminando...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4" />
+                    Eliminar Cuenta
+                  </>
+                )}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* Mis Publicaciones */}
       <motion.div
