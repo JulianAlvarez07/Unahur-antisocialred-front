@@ -1,11 +1,8 @@
-import { TrendingUp, Hash } from "lucide-react";
+import { TrendingUp, Hash, Plus } from "lucide-react";
 import { Tag } from "@/types/interfaces";
 import { motion } from "framer-motion";
-
-interface TendenciasProps {
-  tags: Tag[];
-  loading: boolean;
-}
+import { crearTag } from "../PostTag";
+import { useState } from "react";
 
 const fadeInUp = {
   initial: {
@@ -20,10 +17,40 @@ const fadeInUp = {
     },
   },
 };
+interface TendenciasProps {
+  tags: Tag[];
+  loading: boolean;
+  setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+}
 
-export const Tendencias = ({ tags, loading }: TendenciasProps) => {
+export const Tendencias = ({ tags, loading, setTags }: TendenciasProps) => {
+  const [showForm, setShowForm] = useState(false);
+  const [newTagName, setNewTagName] = useState("");
+  const [error, setError] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+
   // Ordenar tags por cantidad de posts (simulado por ahora)
   const trendingTags = tags.slice(0, 5);
+
+  const handleCrearTag = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTagName.trim()) return;
+
+    setIsCreating(true);
+    setError("");
+
+    try {
+      const nuevoTag = await crearTag(newTagName.trim());
+      setTags((prevTags) => [...prevTags, nuevoTag]);
+      setNewTagName("");
+      setShowForm(false);
+    } catch (error) {
+      setError("Error al crear el tag. Por favor, intenta de nuevo.");
+      console.error("Error al crear el tag:", error);
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   return (
     <motion.div
@@ -31,12 +58,65 @@ export const Tendencias = ({ tags, loading }: TendenciasProps) => {
       className="bg-white rounded-lg shadow-md border border-gray-200"
     >
       <div className="p-3 md:p-4 border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5" />
-          <h2 className="text-lg md:text-xl font-bold font-mono">Tendencias</h2>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-5 h-5" />
+            <h2 className="text-lg md:text-xl font-bold font-mono">
+              Tendencias
+            </h2>
+          </div>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="p-1 rounded-full transition-colors"
+            title="Crear nuevo tag"
+          >
+            <Plus className="w-5 h-5 text-secondary cursor-pointer" />
+          </button>
         </div>
       </div>
       <div className="p-3 md:p-4">
+        {showForm && (
+          <form onSubmit={handleCrearTag} className="mb-4">
+            <div className="flex flex-col space-y-2">
+              <input
+                type="text"
+                value={newTagName}
+                onChange={(e) => setNewTagName(e.target.value)}
+                placeholder="Nombre de la nueva tendencia"
+                className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                maxLength={50}
+                disabled={isCreating}
+              />
+              {error && <p className="text-red-500 text-xs">{error}</p>}
+              <div className="flex justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForm(false);
+                    setNewTagName("");
+                    setError("");
+                  }}
+                  className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-400 hover:text-white rounded-md transition-colors cursor-pointer border border-gray-300"
+                  disabled={isCreating}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={!newTagName.trim() || isCreating}
+                  className={`px-3 py-1 text-sm text-white rounded-md transition-colors ${
+                    !newTagName.trim() || isCreating
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-secondary cursor-pointer"
+                  }`}
+                >
+                  {isCreating ? "Creando..." : "Crear Tendencia"}
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+
         {loading ? (
           <div className="text-center text-gray-500">
             Cargando tendencias...
