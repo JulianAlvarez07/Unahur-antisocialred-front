@@ -23,7 +23,9 @@ const PostForm = () => {
   const [imageUrl, setImageUrl] = useState("");
   const auth = useAuth();
   const usuario = auth?.usuario;
+  const [imagesUrls, setImagesUrls] = useState<string[]>([]);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
     e.preventDefault();
 
     if (!usuario) {
@@ -47,31 +49,30 @@ const PostForm = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Si hay imagen, asociarla al post
-        if (imageUrl) {
-          const imageBody = JSON.stringify({
-            url: imageUrl,
-            userId: usuario.id,
-          });
-          const imageResponse = await fetch(
-            `http://localhost:3001/post/${data.id}/addImage`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: imageBody,
+        // Subir todas las imágenes
+        for (const url of imagesUrls) {
+          if (url.trim()) {
+            const imageBody = JSON.stringify({
+              url,
+              userId: usuario.id,
+            });
+            const imageResponse = await fetch(
+              `http://localhost:3001/post/${data.id}/addImage`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: imageBody,
+              }
+            );
+            if (!imageResponse.ok) {
+              console.error("Error al agregar la imagen:", url);
             }
-          );
-          if (imageResponse.ok) {
-            console.log("Imagen agregada correctamente");
-          } else {
-            console.error("Error al agregar la imagen");
           }
         }
         setContenido("");
-        setImageUrl("");
-        // cambiar por actualizar estado de posts
+        setImagesUrls([]);
         window.location.reload();
       } else {
         console.error("Error al crear el post");
@@ -153,25 +154,37 @@ const PostForm = () => {
               <div className="flex flex-col items-end space-y-2">
                 <input
                   type="url"
-                  placeholder="URL de la imagen"
+                  placeholder="Pega la URL y presiona Enter"
                   className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#14b8a6]"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                   style={{ minWidth: "220px" }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && imageUrl.trim()) {
+                      e.preventDefault();
+                      setImagesUrls([...imagesUrls, imageUrl.trim()]);
+                      setImageUrl("");
+                    }
+                  }}
                 />
                 {/* Previsualización opcional */}
-                {imageUrl && (
-                  <img
-                    src={imageUrl}
-                    alt="Previsualización"
-                    className="mt-1 max-h-24 rounded border border-gray-200"
-                    onError={(e) => (e.currentTarget.style.display = "none")}
-                  />
+                {imagesUrls.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {imagesUrls.map((url, idx) => (
+                      <img
+                        key={idx}
+                        src={url}
+                        alt={`Previsualización ${idx + 1}`}
+                        className="mt-1 max-h-24 rounded border border-gray-200"
+                        onError={(e) => (e.currentTarget.style.display = "none")}
+                      />
+                    ))}
+                  </div>
                 )}
               </div>
             )}
           </div>
-          {/* Aquí puedes agregar otros iconos alineados a la derecha si lo deseas */}
+          {/* Aca va apartado para tags */}
         </motion.div>
         {/* Action buttons */}
         <motion.div
@@ -188,10 +201,9 @@ const PostForm = () => {
             className={`
               px-4 md:px-6 py-2 md:py-3 rounded-md font-medium text-white
               transition-all duration-300 ease-in-out
-              ${
-                !contenido.trim()
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-secondary hover:bg-[#14b8a6] hover:ring-2 hover:ring-[#14b8a6]/50 cursor-pointer"
+              ${!contenido.trim()
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-secondary hover:bg-[#14b8a6] hover:ring-2 hover:ring-[#14b8a6]/50 cursor-pointer"
               }
             `}
           >
