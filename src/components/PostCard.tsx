@@ -3,6 +3,7 @@ import {
   UserForComponent,
   CommentForComponent,
   Post,
+  PostImage,
 } from "@/types/interfaces";
 import CommentForm from "./CommentForm";
 
@@ -12,6 +13,7 @@ interface PostCardProps {
   comments: CommentForComponent[];
   postId: number;
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  postImages: PostImage[];
 }
 
 const PostCard = ({
@@ -19,6 +21,7 @@ const PostCard = ({
   content,
   comments,
   postId,
+  postImages,
   setPosts,
 }: PostCardProps) => {
 
@@ -48,6 +51,21 @@ const PostCard = ({
           {content}
         </p>
       </div>
+
+      {postImages && postImages.length > 0 && (
+        <div className="mb-3 md:mb-4">
+          <div className="flex flex-wrap gap-2">
+            {postImages.map((image, index) => (
+              <img
+                key={index}
+                src={image.url}
+                alt={`Post ${index + 1}`}
+                className="w-1/4 h-auto rounded-lg object-cover"
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Sección de comentarios */}
       <div className="pt-2 md:pt-3 border-t border-gray-100">

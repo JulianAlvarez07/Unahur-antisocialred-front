@@ -48,8 +48,7 @@ const Publicaciones = () => {
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar las publicaciones: ${
-          error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar las publicaciones: ${error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -105,6 +104,7 @@ const Publicaciones = () => {
               comments={adaptedComments}
               postId={post.id}
               setPosts={setPosts}
+              postImages={post.post_images || []}
             />
           );
         })}
