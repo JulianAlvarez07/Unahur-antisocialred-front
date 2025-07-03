@@ -35,19 +35,18 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
   const usuario = auth?.usuario;
 
   const handleTagToggle = (tagId: number) => {
-    setSelectedTags(prev =>
+    setSelectedTags((prev) =>
       prev.includes(tagId)
-        ? prev.filter(id => id !== tagId)
+        ? prev.filter((id) => id !== tagId)
         : [...prev, tagId]
     );
   };
   //borra imagen de la lista de imagenes previas
   const handleRemoveImage = (indexToRemove: number) => {
-    setImagesUrls(prev => prev.filter((_, index) => index !== indexToRemove));
+    setImagesUrls((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-
     e.preventDefault();
 
     if (!usuario) {
@@ -115,9 +114,22 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
         }
         // Obtener el post completo con imágenes y tags después de agregarlos
         try {
-          const completePostResponse = await fetch(`http://localhost:3001/post/${postId}`);
+          const completePostResponse = await fetch(
+            `http://localhost:3001/post/${postId}?includeUser=true`
+          );
           if (completePostResponse.ok) {
             const completePost = await completePostResponse.json();
+
+            // Asegurarnos de que el post tenga la información del usuario
+            const postWithUser = {
+              ...completePost,
+              user: {
+                id: usuario.id,
+                nombre: usuario.nombre,
+                nickName: usuario.nickName,
+                email: usuario.email,
+              },
+            };
 
             // Limpiar el formulario
             setContenido("");
@@ -126,8 +138,9 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
 
             // Agregar el post completo al array y ordenar por fecha
             if (setPosts && posts) {
-              const updatedPosts = [completePost, ...posts].sort(
-                (a: Post, b: Post) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+              const updatedPosts = [postWithUser, ...posts].sort(
+                (a: Post, b: Post) =>
+                  new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
               );
               setPosts(updatedPosts);
             }
@@ -135,14 +148,32 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
             console.error("Error al obtener el post completo");
             // Si no se puede obtener el post completo, usamos el basivo
             if (setPosts && posts) {
-              setPosts([data, ...posts]);
+              const basicPost = {
+                ...data,
+                user: {
+                  id: usuario.id,
+                  nombre: usuario.nombre,
+                  nickName: usuario.nickName,
+                  email: usuario.email,
+                },
+              };
+              setPosts([basicPost, ...posts]);
             }
           }
         } catch (error) {
           console.error("Error al obtener el post completo:", error);
           // Si hay error, usamos el post básico
           if (setPosts && posts) {
-            setPosts([data, ...posts]);
+            const basicPost = {
+              ...data,
+              user: {
+                id: usuario.id,
+                nombre: usuario.nombre,
+                nickName: usuario.nickName,
+                email: usuario.email,
+              },
+            };
+            setPosts([basicPost, ...posts]);
           }
         }
       } else {
@@ -248,7 +279,9 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
                           src={url}
                           alt={`Previsualización ${idx + 1}`}
                           className="mt-1 max-h-24 rounded border border-gray-200"
-                          onError={(e) => (e.currentTarget.style.display = "none")}
+                          onError={(e) =>
+                            (e.currentTarget.style.display = "none")
+                          }
                         />
                         {/* Botón de eliminar */}
                         <button
@@ -272,7 +305,7 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
               type="button"
               className="p-2 rounded hover:bg-gray-100 focus:outline-none"
               title="Agregar tags"
-              onClick={() => setShowTagSelector(prev => !prev)}
+              onClick={() => setShowTagSelector((prev) => !prev)}
             >
               {/* SVG de tag */}
               <svg
@@ -288,7 +321,11 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
                   strokeLinejoin="round"
                   d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
                 />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 6h.008v.008H6V6z"
+                />
               </svg>
             </button>
           </div>
@@ -305,7 +342,8 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
             <h4 className="text-sm font-medium mb-2">Seleccionar tags:</h4>
             {!tags || tags.length === 0 ? (
               <div className="text-sm text-gray-500">
-                No hay tags disponibles. Puedes crear nuevos tags desde las "Tendencias" en la barra lateral.
+                No hay tags disponibles. Puedes crear nuevos tags desde las
+                "Tendencias" en la barra lateral.
               </div>
             ) : (
               <div className="flex flex-wrap gap-2">
@@ -314,10 +352,11 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
                     key={tag.id}
                     type="button"
                     onClick={() => handleTagToggle(tag.id)}
-                    className={`px-3 py-1 rounded-full text-sm transition-colors ${selectedTags.includes(tag.id)
-                      ? "bg-[#14b8a6] text-white"
-                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
-                      }`}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                      selectedTags.includes(tag.id)
+                        ? "bg-[#14b8a6] text-white"
+                        : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+                    }`}
                   >
                     {tag.nombreEtiqueta}
                   </button>
@@ -346,9 +385,10 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
             className={`
               px-4 md:px-6 py-2 md:py-3 rounded-md font-medium text-white
               transition-all duration-300 ease-in-out
-              ${!contenido.trim()
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-secondary hover:bg-[#14b8a6] hover:ring-2 hover:ring-[#14b8a6]/50 cursor-pointer"
+              ${
+                !contenido.trim()
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-secondary hover:bg-[#14b8a6] hover:ring-2 hover:ring-[#14b8a6]/50 cursor-pointer"
               }
             `}
           >

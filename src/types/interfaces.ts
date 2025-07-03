@@ -19,6 +19,10 @@ export interface Comment {
   postIdComment: number;
   fecha: string;
   visible: boolean;
+  user: {
+    nickname: string;
+    nombre: string;
+  };
 }
 
 export interface Post {
@@ -47,8 +51,8 @@ export interface PostImage {
 export interface CommentForComponent {
   userId: number;
   contenido: string;
+  nickName: string;
 }
-
 export interface UserForComponent {
   nickName: string;
   nombre: string;

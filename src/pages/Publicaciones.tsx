@@ -51,12 +51,16 @@ const Publicaciones = () => {
       }
       const postsData = await postsResponse.json();
       console.log("Posts cargados en Publicaciones:", postsData);
-      console.log("Posts con tags:", postsData.filter((p: Post) => p.tags && p.tags.length > 0));
+      console.log(
+        "Posts con tags:",
+        postsData.filter((p: Post) => p.tags && p.tags.length > 0)
+      );
       setPosts(postsData);
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar las publicaciones: ${error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar las publicaciones: ${
+          error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -103,6 +107,8 @@ const Publicaciones = () => {
           const adaptedComments = (post.comment || []).map((comment) => ({
             userId: comment.userIdComment,
             contenido: comment.comentario,
+            nickName:
+              comment.user?.nickname || `Usuario ${comment.userIdComment}`,
           }));
 
           return (

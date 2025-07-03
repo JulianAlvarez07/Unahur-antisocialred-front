@@ -51,7 +51,7 @@ const PostDetail = () => {
       }
       const data = await response.json();
 
-      // Obtener datos del usuario
+      // Obtener datos del usuario del post
       const userResponse = await fetch(
         `http://localhost:3001/users/${data.userId}`
       );
@@ -60,10 +60,28 @@ const PostDetail = () => {
         data.user = userData;
       }
 
+      // Obtener datos de los usuarios que comentaron
+      if (data.comment) {
+        const commentUserIds = [
+          ...new Set(data.comment.map((c: Comment) => c.userIdComment)),
+        ];
+        const userDataPromises = commentUserIds.map((userId) =>
+          fetch(`http://localhost:3001/users/${userId}`).then((r) => r.json())
+        );
+        const users = await Promise.all(userDataPromises);
+        const userMap = new Map(users.map((u) => [u.id, u]));
+
+        data.comment = data.comment.map((comment: Comment) => ({
+          ...comment,
+          nickName: userMap.get(comment.userIdComment)?.nickName,
+        }));
+      }
+
       setPost(data);
     } catch (err) {
       setError(
-        `Error al cargar el post: ${err instanceof Error ? err.message : "Error desconocido"
+        `Error al cargar el post: ${
+          err instanceof Error ? err.message : "Error desconocido"
         }`
       );
     } finally {
@@ -103,7 +121,7 @@ const PostDetail = () => {
     return null;
   }
 
-  // Filtrar comentarios visibles (usar el array comment directamente)
+  // Filtrar comentarios visibles
   const visibleComments =
     post.comment?.filter((comment: Comment) => comment.visible) || [];
 
@@ -111,6 +129,7 @@ const PostDetail = () => {
   const adaptedComments = visibleComments.map((comment) => ({
     userId: comment.userIdComment,
     contenido: comment.comentario,
+    nickName: comment.user?.nickname || `Usuario ${comment.userIdComment}`,
   }));
 
   return (
@@ -222,7 +241,6 @@ const PostDetail = () => {
         </div>
         {/*seccion agregar comentarios */}
         <div className="border-t border-gray-200 pt-6">
-
           <CommentDetailsForm post={post} setPost={setPost} />
         </div>
         {/* Lista de Comentarios Visibles */}
