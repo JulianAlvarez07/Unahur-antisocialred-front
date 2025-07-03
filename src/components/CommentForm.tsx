@@ -37,7 +37,7 @@ const CommentForm = ({ postId, setPosts }: { postId: number, setPosts: React.Dis
                         post.id === postId
                             ? {
                                 ...post,
-                                comment: [...post.comment, savedComment],
+                                comment: [...(post.comment || []), savedComment],
                             }
                             : post
                     )

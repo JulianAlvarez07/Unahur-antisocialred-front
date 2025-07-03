@@ -33,7 +33,7 @@ const CommentDetailsForm = ({ post, setPost }: { post: Post, setPost: React.Disp
                 setIsFormVisible(false);
                 setPost({
                     ...post,
-                    comment: [...post.comment, savedComment],
+                    comment: [...(post.comment || []), savedComment],
                 });
             } else {
                 console.error('Error al enviar el comentario:', response.status);

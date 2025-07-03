@@ -97,10 +97,10 @@ const Publicaciones = () => {
       </h1>
 
       <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
-        <PostForm tags={tags} />
+        <PostForm tags={tags} posts={posts} setPosts={setPosts} />
         {posts.map((post) => {
           // Convertir comentarios al formato esperado por PostCard
-          const adaptedComments = post.comment.map((comment) => ({
+          const adaptedComments = (post.comment || []).map((comment) => ({
             userId: comment.userIdComment,
             contenido: comment.comentario,
           }));

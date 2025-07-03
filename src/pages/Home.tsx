@@ -79,8 +79,7 @@ const Home = () => {
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
-        `Error al cargar los datos: ${
-          error instanceof Error ? error.message : "Error desconocido"
+        `Error al cargar los datos: ${error instanceof Error ? error.message : "Error desconocido"
         }`
       );
     } finally {
@@ -109,9 +108,8 @@ const Home = () => {
               transition={{ duration: 0.5, delay: 1 }}
             >
               {usuario
-                ? `Hola ${
-                    usuario.nombre.split(" ")[0]
-                  }, contá lo que quieras y probá tus habilidades CRUD.`
+                ? `Hola ${usuario.nombre.split(" ")[0]
+                }, contá lo que quieras y probá tus habilidades CRUD.`
                 : "La red social donde menos social, más auténtico. Conectate con Los CRUDos."}
             </motion.p>
           </div>
@@ -139,7 +137,7 @@ const Home = () => {
                   </p>
                 </div>
               </motion.div>
-              <PostForm tags={tags} />
+              <PostForm tags={tags} setPosts={setPosts} posts={posts} />
             </div>
           )}
 
@@ -169,7 +167,7 @@ const Home = () => {
                 {/* Todas las publicaciones */}
                 <div className="space-y-6">
                   {posts.map((post) => {
-                    const adaptedComments = post.comment.map((comment) => ({
+                    const adaptedComments = (post.comment || []).map((comment) => ({
                       userId: comment.userIdComment,
                       contenido: comment.comentario,
                     }));

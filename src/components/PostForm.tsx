@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { motion, Variants } from "framer-motion";
-import { Tag } from "@/types/interfaces";
+import { Tag, Post } from "@/types/interfaces";
 
 const scaleIn: Variants = {
   initial: {
@@ -20,9 +20,11 @@ const scaleIn: Variants = {
 
 interface PostFormProps {
   tags: Tag[];
+  posts?: Post[];
+  setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
 }
 
-const PostForm = ({ tags }: PostFormProps) => {
+const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
   const [contenido, setContenido] = useState("");
   const [showImageInput, setShowImageInput] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
@@ -33,8 +35,8 @@ const PostForm = ({ tags }: PostFormProps) => {
   const usuario = auth?.usuario;
 
   const handleTagToggle = (tagId: number) => {
-    setSelectedTags(prev => 
-      prev.includes(tagId) 
+    setSelectedTags(prev =>
+      prev.includes(tagId)
         ? prev.filter(id => id !== tagId)
         : [...prev, tagId]
     );
@@ -109,7 +111,11 @@ const PostForm = ({ tags }: PostFormProps) => {
         setContenido("");
         setImagesUrls([]);
         setSelectedTags([]);
-        window.location.reload();
+        console.log("Posts:", posts);
+        if (setPosts && posts) {
+          setPosts([...posts, data]);
+        }
+        //window.location.reload();
       } else {
         console.error("Error al crear el post");
         alert("Error al crear la publicación");
@@ -268,11 +274,10 @@ const PostForm = ({ tags }: PostFormProps) => {
                     key={tag.id}
                     type="button"
                     onClick={() => handleTagToggle(tag.id)}
-                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                      selectedTags.includes(tag.id)
-                        ? "bg-[#14b8a6] text-white"
-                        : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
-                    }`}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors ${selectedTags.includes(tag.id)
+                      ? "bg-[#14b8a6] text-white"
+                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+                      }`}
                   >
                     {tag.nombreEtiqueta}
                   </button>
