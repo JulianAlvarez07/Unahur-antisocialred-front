@@ -104,7 +104,11 @@ const Perfil = () => {
 
   const handleEliminarPost = async (postId: number) => {
     // Confirmación antes de eliminar
-    if (!window.confirm("¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.")) {
+    if (
+      !window.confirm(
+        "¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer."
+      )
+    ) {
       return;
     }
 
@@ -115,7 +119,9 @@ const Perfil = () => {
 
       if (response.ok) {
         // Actualizar la lista de posts eliminando el post borrado
-        setUserPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+        setUserPosts((prevPosts) =>
+          prevPosts.filter((post) => post.id !== postId)
+        );
         alert("Publicación eliminada exitosamente");
       } else {
         alert("Error al eliminar la publicación");
@@ -217,7 +223,7 @@ const Perfil = () => {
           {/* Info del Usuario */}
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-              Perfil de Usuario
+              {usuario.nombre}
             </h1>
             <h2 className="text-xl md:text-2xl text-secondary font-semibold mb-2">
               {usuario.nickName}
@@ -489,7 +495,7 @@ const Perfil = () => {
                     >
                       Ver más
                     </button>
-                    
+
                     {/* Botón Eliminar */}
                     <button
                       onClick={() => handleEliminarPost(post.id)}
