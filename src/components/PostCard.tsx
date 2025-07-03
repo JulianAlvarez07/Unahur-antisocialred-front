@@ -7,6 +7,8 @@ import {
   Tag,
 } from "@/types/interfaces";
 import CommentForm from "./CommentForm";
+import { useNavigate } from "react-router-dom";
+import { Eye } from "lucide-react";
 
 interface PostCardProps {
   content: string;
@@ -28,8 +30,14 @@ const PostCard = ({
   tags,
 }: PostCardProps) => {
   
+  const navigate = useNavigate();
+  
   // Debug para ver los tags
   console.log(`PostCard ${postId} - Tags recibidos:`, tags);
+
+  const handleVerMas = (postId: number) => {
+    navigate(`/post/${postId}`);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-3 md:p-6 mb-4 w-full">
@@ -100,6 +108,17 @@ const PostCard = ({
           </div>
         </div>
       )}
+
+      {/* Botón Ver Más */}
+      <div className="mb-3 md:mb-4 flex justify-end">
+        <button
+          onClick={() => handleVerMas(postId)}
+          className="bg-secondary hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 cursor-pointer inline-flex items-center"
+        >
+          <Eye className="w-4 h-4 mr-2" />
+          Ver más
+        </button>
+      </div>
 
       {/* Sección de comentarios */}
       <div className="pt-2 md:pt-3 border-t border-gray-100">
