@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Post, Comment } from "@/types/interfaces";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, MessageCircle, User, Tag as TagIcon } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  MessageCircle,
+  User,
+  Tag as TagIcon,
+} from "lucide-react";
 import CommentCard from "@/components/CommentCard";
 
 const fadeInUp = {
@@ -43,11 +49,22 @@ const PostDetail = () => {
         throw new Error(`Error ${response.status}: Post no encontrado`);
       }
       const data = await response.json();
-      console.log("Post detail cargado:", data); // Debug
+
+      // Obtener datos del usuario
+      const userResponse = await fetch(
+        `http://localhost:3001/users/${data.userId}`
+      );
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        data.user = userData;
+      }
+
       setPost(data);
     } catch (err) {
       setError(
-        `Error al cargar el post: ${err instanceof Error ? err.message : "Error desconocido"}`
+        `Error al cargar el post: ${
+          err instanceof Error ? err.message : "Error desconocido"
+        }`
       );
     } finally {
       setLoading(false);
@@ -87,7 +104,8 @@ const PostDetail = () => {
   }
 
   // Filtrar comentarios visibles (usar el array comment directamente)
-  const visibleComments = post.comment?.filter((comment: Comment) => comment.visible) || [];
+  const visibleComments =
+    post.comment?.filter((comment: Comment) => comment.visible) || [];
 
   // Adaptar comentarios para CommentCard
   const adaptedComments = visibleComments.map((comment) => ({
@@ -108,7 +126,6 @@ const PostDetail = () => {
 
       {/* Contenido Principal */}
       <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 md:p-8 max-w-4xl mx-auto">
-        
         {/* Header del Post */}
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
           <div className="flex items-center space-x-3">
@@ -126,13 +143,14 @@ const PostDetail = () => {
           </div>
           <div className="flex items-center text-gray-500 text-sm">
             <Calendar className="w-4 h-4 mr-1" />
-            {post.fecha ? new Date(post.fecha).toLocaleDateString() : "Fecha no disponible"}
+            {post.fecha
+              ? new Date(post.fecha).toLocaleDateString()
+              : "Fecha no disponible"}
           </div>
         </div>
 
         {/* Descripción Completa */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Detalle de la Publicación</h1>
           <div className="prose max-w-none">
             <p className="text-gray-800 leading-relaxed text-base break-words whitespace-pre-wrap">
               {post.contenido}
@@ -164,10 +182,15 @@ const PostDetail = () => {
         {/* Imágenes */}
         {post.post_images && post.post_images.length > 0 && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">Imágenes</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              Imágenes
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {post.post_images.map((image, index) => (
-                <div key={index} className="overflow-hidden rounded-lg border border-gray-200">
+                <div
+                  key={index}
+                  className="overflow-hidden rounded-lg border border-gray-200"
+                >
                   <img
                     src={image.url}
                     alt={`Imagen ${index + 1} del post`}
@@ -190,9 +213,7 @@ const PostDetail = () => {
               <span>{visibleComments.length} comentarios visibles</span>
             </div>
             <div className="flex items-center space-x-4">
-              {post.tags && (
-                <span>{post.tags.length} etiquetas</span>
-              )}
+              {post.tags && <span>{post.tags.length} etiquetas</span>}
               {post.post_images && (
                 <span>{post.post_images.length} imágenes</span>
               )}
@@ -206,7 +227,7 @@ const PostDetail = () => {
             <MessageCircle className="w-5 h-5 mr-2" />
             Comentarios ({visibleComments.length})
           </h3>
-          
+
           {visibleComments.length > 0 ? (
             <div className="space-y-4">
               {adaptedComments.map((comment, index) => (
@@ -218,7 +239,9 @@ const PostDetail = () => {
           ) : (
             <div className="text-center py-8">
               <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No hay comentarios visibles para esta publicación.</p>
+              <p className="text-gray-500">
+                No hay comentarios visibles para esta publicación.
+              </p>
             </div>
           )}
         </div>
