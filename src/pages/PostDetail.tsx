@@ -10,6 +10,7 @@ import {
   Tag as TagIcon,
 } from "lucide-react";
 import CommentCard from "@/components/CommentCard";
+import CommentDetailsForm from "@/components/CommentDetailsForm";
 
 const fadeInUp = {
   initial: {
@@ -62,8 +63,7 @@ const PostDetail = () => {
       setPost(data);
     } catch (err) {
       setError(
-        `Error al cargar el post: ${
-          err instanceof Error ? err.message : "Error desconocido"
+        `Error al cargar el post: ${err instanceof Error ? err.message : "Error desconocido"
         }`
       );
     } finally {
@@ -220,13 +220,18 @@ const PostDetail = () => {
             </div>
           </div>
         </div>
-
-        {/* Lista de Comentarios Visibles */}
+        {/*seccion agregar comentarios */}
         <div className="border-t border-gray-200 pt-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+
+          <CommentDetailsForm post={post} setPost={setPost} />
+        </div>
+        {/* Lista de Comentarios Visibles */}
+
+        <div className="border-t border-gray-200 pt-6">
+          <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <MessageCircle className="w-5 h-5 mr-2" />
             Comentarios ({visibleComments.length})
-          </h3>
+          </h4>
 
           {visibleComments.length > 0 ? (
             <div className="space-y-4">
