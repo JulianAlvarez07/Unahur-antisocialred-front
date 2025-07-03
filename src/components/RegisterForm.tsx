@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 const RegisterForm = () => {
   const navigate = useNavigate();
   const [nickName, setNickName] = useState("");
@@ -7,9 +8,59 @@ const RegisterForm = () => {
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [nicknameError, setNicknameError] = useState("");
+  const [isCheckingNickname, setIsCheckingNickname] = useState(false);
+
+  // Función para verificar si el nickname está disponible
+  const checkNicknameAvailability = async (nickname: string) => {
+    if (!nickname.trim()) {
+      setNicknameError("");
+      return;
+    }
+
+    setIsCheckingNickname(true);
+    setNicknameError("");
+
+    try {
+      const response = await fetch("http://localhost:3001/users");
+      const users = await response.json();
+      const existingUser = users.find((user: any) => user.nickName === nickname);
+
+      if (existingUser) {
+        setNicknameError("Este nickname ya está ocupado");
+      } else {
+        setNicknameError("");
+      }
+    } catch (error) {
+      console.error("Error al verificar nickname:", error);
+      setNicknameError("Error al verificar disponibilidad");
+    } finally {
+      setIsCheckingNickname(false);
+    }
+  };
+
+  // Función para manejar el cambio del nickname con validación
+  const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNickName(value);
+
+    // Validar después de un pequeño delay para evitar muchas peticiones
+    const timeoutId = setTimeout(() => {
+      checkNicknameAvailability(value);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Verificar si hay errores antes de enviar
+    if (nicknameError) {
+      alert("Por favor corrige los errores antes de continuar");
+      return;
+    }
+
     const user = {
       nickName,
       nombre,
@@ -31,9 +82,10 @@ const RegisterForm = () => {
         alert("Error al registrar usuario");
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.log("Error:", error instanceof Error ? error.message : "Error desconocido");
     }
   };
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl w-full space-y-8">
@@ -90,11 +142,18 @@ const RegisterForm = () => {
                     id="nickName"
                     name="nickName"
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent ${nicknameError ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Ingresa tu nickname"
                     value={nickName}
-                    onChange={(e) => setNickName(e.target.value)}
+                    onChange={handleNicknameChange}
                   />
+                  {isCheckingNickname && (
+                    <p className="text-sm text-blue-600">Verificando disponibilidad...</p>
+                  )}
+                  {nicknameError && (
+                    <p className="text-sm text-red-600">{nicknameError}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label
