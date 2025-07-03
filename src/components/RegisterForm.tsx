@@ -1,5 +1,6 @@
+import { motion } from "motion/react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -24,7 +25,9 @@ const RegisterForm = () => {
     try {
       const response = await fetch("http://localhost:3001/users");
       const users = await response.json();
-      const existingUser = users.find((user: any) => user.nickName === nickname);
+      const existingUser = users.find(
+        (user: any) => user.nickName === nickname
+      );
 
       if (existingUser) {
         setNicknameError("Este nickname ya está ocupado");
@@ -82,20 +85,21 @@ const RegisterForm = () => {
         alert("Error al registrar usuario");
       }
     } catch (error) {
-      console.log("Error:", error instanceof Error ? error.message : "Error desconocido");
+      console.log(
+        "Error:",
+        error instanceof Error ? error.message : "Error desconocido"
+      );
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl w-full space-y-8">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+      <motion.div
+        className="max-w-5xl w-full space-y-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-            UnaHur Anti-Social Red
-          </h1>
-          <p className="text-lg text-gray-600">Los CRUDos</p>
-        </div>
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white rounded-lg shadow-lg overflow-hidden">
@@ -130,6 +134,7 @@ const RegisterForm = () => {
                     onChange={(e) => setNombre(e.target.value)}
                   />
                 </div>
+
                 <div className="space-y-2">
                   <label
                     htmlFor="nickName"
@@ -142,19 +147,33 @@ const RegisterForm = () => {
                     id="nickName"
                     name="nickName"
                     required
-                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent ${nicknameError ? 'border-red-500' : 'border-gray-300'
-                      }`}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent ${
+                      nicknameError ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="Ingresa tu nickname"
                     value={nickName}
                     onChange={handleNicknameChange}
                   />
                   {isCheckingNickname && (
-                    <p className="text-sm text-blue-600">Verificando disponibilidad...</p>
+                    <motion.p
+                      className="text-sm text-blue-600"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      Verificando disponibilidad...
+                    </motion.p>
                   )}
                   {nicknameError && (
-                    <p className="text-sm text-red-600">{nicknameError}</p>
+                    <motion.p
+                      className="text-sm text-red-600"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      {nicknameError}
+                    </motion.p>
                   )}
                 </div>
+
                 <div className="space-y-2">
                   <label
                     htmlFor="email"
@@ -173,6 +192,7 @@ const RegisterForm = () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
+
                 <div className="space-y-2">
                   <label
                     htmlFor="birthday"
@@ -186,7 +206,6 @@ const RegisterForm = () => {
                     name="birthday"
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent"
-                    placeholder="Ingresa tu nickname"
                     value={birthday}
                     onChange={(e) => setBirthday(e.target.value)}
                   />
@@ -211,34 +230,43 @@ const RegisterForm = () => {
                   />
                 </div>
 
-                <button
+                <motion.button
                   type="submit"
-                  className="w-full bg-secondary text-white py-2 px-4 rounded-md font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 transition-colors"
+                  className="w-full bg-secondary text-white py-2 px-4 rounded-md font-medium transition-colors cursor-pointer"
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   Registrate
-                </button>
+                </motion.button>
+
+                <p className="text-center text-gray-500 text-sm">
+                  ¿Ya tenés una cuenta?{" "}
+                  <Link
+                    to="/"
+                    className="text-secondary hover:text-blue-700 font-medium hover:underline"
+                  >
+                    Ingresá acá
+                  </Link>
+                </p>
               </form>
             </div>
           </div>
 
           {/* Sección de Bienvenida */}
-          <div className="bg-secondary p-6 md:p-8 lg:p-12 flex items-center justify-center">
+          <motion.div
+            className="bg-secondary p-6 md:p-8 lg:p-12 flex items-center justify-center"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
             <div className="text-center text-white">
               <div className="mb-8">
                 <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg
-                    className="w-10 h-10 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                    />
-                  </svg>
+                  <motion.img
+                    src="/crudos-icon.png"
+                    alt="logo"
+                    className="w-12 h-12"
+                    whileHover={{ rotate: 360 }}
+                  />
                 </div>
               </div>
 
@@ -254,10 +282,23 @@ const RegisterForm = () => {
                 Conectate con Los CRUDos y comparte tus ideas en nuestra
                 comunidad universitaria exclusiva
               </p>
+              <p className="text-white mb-6 leading-relaxed">
+                Puedes ingresar a nuestra red sin iniciar sesión, pero para
+                acceder a todas las funcionalidades, tenés que registrarte.
+              </p>
+              <p className="text-white mb-6 leading-relaxed">
+                Entra desde aqui:{" "}
+                <Link
+                  to="/Home"
+                  className="text-secondary hover:text-blue-700 font-medium hover:underline"
+                >
+                  Inicio
+                </Link>
+              </p>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

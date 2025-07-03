@@ -242,7 +242,7 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6 text-gray-600"
+                className="w-6 h-6 text-gray-600 cursor-pointer"
               >
                 <path
                   strokeLinecap="round"
@@ -314,7 +314,7 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6 text-gray-600"
+                className="w-6 h-6 text-gray-600 cursor-pointer"
               >
                 <path
                   strokeLinecap="round"
