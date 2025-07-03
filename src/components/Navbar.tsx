@@ -12,7 +12,6 @@ const Navbar = () => {
     <nav className="bg-gradient-to-r from-[#1a2942] to-[#2c3e50] shadow-lg font-sans">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo/Brand */}
           <div className="flex-shrink-0">
             <Link
               to="/home"
@@ -23,7 +22,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop Menu */}
+          {/* Menu */}
           <div className="hidden md:block">
             <ul className="flex items-center space-x-1 lg:space-x-2">
               <li>
