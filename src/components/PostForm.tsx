@@ -41,6 +41,11 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
         : [...prev, tagId]
     );
   };
+  //borra imagen de la lista de imagenes previas
+  const handleRemoveImage = (indexToRemove: number) => {
+    setImagesUrls(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
     e.preventDefault();
@@ -108,14 +113,38 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
             }
           }
         }
-        setContenido("");
-        setImagesUrls([]);
-        setSelectedTags([]);
-        console.log("Posts:", posts);
-        if (setPosts && posts) {
-          setPosts([...posts, data]);
+        // Obtener el post completo con imágenes y tags después de agregarlos
+        try {
+          const completePostResponse = await fetch(`http://localhost:3001/post/${postId}`);
+          if (completePostResponse.ok) {
+            const completePost = await completePostResponse.json();
+
+            // Limpiar el formulario
+            setContenido("");
+            setImagesUrls([]);
+            setSelectedTags([]);
+
+            // Agregar el post completo al array y ordenar por fecha
+            if (setPosts && posts) {
+              const updatedPosts = [completePost, ...posts].sort(
+                (a: Post, b: Post) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+              );
+              setPosts(updatedPosts);
+            }
+          } else {
+            console.error("Error al obtener el post completo");
+            // Si no se puede obtener el post completo, usamos el basivo
+            if (setPosts && posts) {
+              setPosts([data, ...posts]);
+            }
+          }
+        } catch (error) {
+          console.error("Error al obtener el post completo:", error);
+          // Si hay error, usamos el post básico
+          if (setPosts && posts) {
+            setPosts([data, ...posts]);
+          }
         }
-        //window.location.reload();
       } else {
         console.error("Error al crear el post");
         alert("Error al crear la publicación");
@@ -195,6 +224,7 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
             {showImageInput && (
               <div className="flex flex-col items-end space-y-2">
                 <input
+                  id="imageUrl"
                   type="url"
                   placeholder="Pega la URL y presiona Enter"
                   className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#14b8a6]"
@@ -213,13 +243,23 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
                 {imagesUrls.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {imagesUrls.map((url, idx) => (
-                      <img
-                        key={idx}
-                        src={url}
-                        alt={`Previsualización ${idx + 1}`}
-                        className="mt-1 max-h-24 rounded border border-gray-200"
-                        onError={(e) => (e.currentTarget.style.display = "none")}
-                      />
+                      <div key={idx} className="relative group">
+                        <img
+                          src={url}
+                          alt={`Previsualización ${idx + 1}`}
+                          className="mt-1 max-h-24 rounded border border-gray-200"
+                          onError={(e) => (e.currentTarget.style.display = "none")}
+                        />
+                        {/* Botón de eliminar */}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(idx)}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                          title="Eliminar imagen"
+                        >
+                          ×
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}

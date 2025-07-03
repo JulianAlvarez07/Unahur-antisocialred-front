@@ -47,7 +47,7 @@ const RegisterForm = () => {
     // Validar después de un pequeño delay para evitar muchas peticiones
     const timeoutId = setTimeout(() => {
       checkNicknameAvailability(value);
-    }, 500);
+    }, 1000);
 
     return () => clearTimeout(timeoutId);
   };
