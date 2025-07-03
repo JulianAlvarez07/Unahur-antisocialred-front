@@ -2,6 +2,8 @@ import PostCard from "@/components/PostCard";
 import { useEffect, useState } from "react";
 import { Post } from "@/types/interfaces";
 import { motion } from "framer-motion";
+import PostForm from "@/components/PostForm";
+import { Tag } from "@/types/interfaces";
 
 const fadeInUp = {
   initial: {
@@ -21,6 +23,7 @@ const Publicaciones = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [tags, setTags] = useState<Tag[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -36,7 +39,11 @@ const Publicaciones = () => {
         postsResponse.status,
         postsResponse.statusText
       );
-
+      const tagsResponse = await fetch("http://localhost:3001/tags");
+      if (tagsResponse.ok) {
+        const tagsData = await tagsResponse.json();
+        setTags(tagsData);
+      }
       if (!postsResponse.ok) {
         throw new Error(
           `Error ${postsResponse.status}: ${postsResponse.statusText}`
@@ -90,6 +97,7 @@ const Publicaciones = () => {
       </h1>
 
       <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
+        <PostForm tags={tags} />
         {posts.map((post) => {
           // Convertir comentarios al formato esperado por PostCard
           const adaptedComments = post.comment.map((comment) => ({
