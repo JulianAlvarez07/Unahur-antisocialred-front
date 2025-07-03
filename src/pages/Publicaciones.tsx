@@ -51,11 +51,18 @@ const Publicaciones = () => {
       }
       const postsData = await postsResponse.json();
       console.log("Posts cargados en Publicaciones:", postsData);
+
+      // Ordenar posts por fecha descendente (más nuevos primero)
+      const sortedPosts = postsData.sort(
+        (a: Post, b: Post) =>
+          new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
+      );
+
       console.log(
         "Posts con tags:",
-        postsData.filter((p: Post) => p.tags && p.tags.length > 0)
+        sortedPosts.filter((p: Post) => p.tags && p.tags.length > 0)
       );
-      setPosts(postsData);
+      setPosts(sortedPosts);
     } catch (error) {
       console.error("Error detallado:", error);
       setError(
@@ -99,7 +106,6 @@ const Publicaciones = () => {
       <h1 className="text-center text-2xl md:text-3xl lg:text-4xl mb-6 md:mb-8 font-mono">
         Publicaciones
       </h1>
-
       <div className="max-w-3xl mx-auto space-y-4 md:space-y-6">
         <PostForm tags={tags} posts={posts} setPosts={setPosts} />
         {posts.map((post) => {
