@@ -102,6 +102,30 @@ const Perfil = () => {
     navigate(`/post/${postId}`);
   };
 
+  const handleEliminarPost = async (postId: number) => {
+    // Confirmación antes de eliminar
+    if (!window.confirm("¿Estás seguro de que quieres eliminar esta publicación? Esta acción no se puede deshacer.")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3001/post/${postId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        // Actualizar la lista de posts eliminando el post borrado
+        setUserPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+        alert("Publicación eliminada exitosamente");
+      } else {
+        alert("Error al eliminar la publicación");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el post:", error);
+      alert("Error al conectar con el servidor");
+    }
+  };
+
   const handleSaveDescription = () => {
     if (usuario && tempDescription.trim()) {
       localStorage.setItem(
@@ -456,13 +480,25 @@ const Perfil = () => {
                     </div>
                   </div>
 
-                  {/* Botón Ver Más */}
-                  <button
-                    onClick={() => handleVerMas(post.id)}
-                    className="bg-secondary hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 cursor-pointer"
-                  >
-                    Ver más
-                  </button>
+                  {/* Botones de Acción */}
+                  <div className="flex gap-2">
+                    {/* Botón Ver Más */}
+                    <button
+                      onClick={() => handleVerMas(post.id)}
+                      className="bg-secondary hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 cursor-pointer"
+                    >
+                      Ver más
+                    </button>
+                    
+                    {/* Botón Eliminar */}
+                    <button
+                      onClick={() => handleEliminarPost(post.id)}
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 cursor-pointer inline-flex items-center"
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
