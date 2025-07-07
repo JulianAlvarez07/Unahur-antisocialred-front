@@ -1,6 +1,8 @@
+import { buildApiUrl } from "@/config/api";
+
 export async function crearTag(nombreEtiqueta: string) {
   try {
-    const response = await fetch("http://localhost:3001/tags", {
+    const response = await fetch(buildApiUrl("/tags"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

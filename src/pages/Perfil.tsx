@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { User, Post } from "@/types/interfaces";
 import { motion } from "framer-motion";
 import { Pencil, Trash2, AlertCircle } from "lucide-react";
+import { buildApiUrl } from "@/config/api";
 
 const fadeInUp = {
   initial: {
@@ -51,9 +52,7 @@ const Perfil = () => {
       console.log(`Cargando perfil del usuario ID: ${usuario.id}`);
 
       // Obtener datos del usuario específico
-      const userResponse = await fetch(
-        `http://localhost:3001/users/${usuario.id}`
-      );
+      const userResponse = await fetch(buildApiUrl(`/users/${usuario.id}`));
       if (userResponse.ok) {
         const userData = await userResponse.json();
         console.log("Datos del usuario:", userData);
@@ -69,7 +68,7 @@ const Perfil = () => {
       }
 
       // Obtener posts del usuario
-      const postsResponse = await fetch("http://localhost:3001/post");
+      const postsResponse = await fetch(buildApiUrl("/post"));
       if (postsResponse.ok) {
         const allPosts = await postsResponse.json();
         // Filtrar solo los posts del usuario actual
@@ -113,7 +112,7 @@ const Perfil = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/post/${postId}`, {
+      const response = await fetch(buildApiUrl(`/post/${postId}`), {
         method: "DELETE",
       });
 
@@ -155,12 +154,9 @@ const Perfil = () => {
 
     try {
       setIsDeleting(true);
-      const response = await fetch(
-        `http://localhost:3001/users/${usuario.id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(buildApiUrl(`/users/${usuario.id}`), {
+        method: "DELETE",
+      });
 
       if (response.ok) {
         // Limpiar localStorage

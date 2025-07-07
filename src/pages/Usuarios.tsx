@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { User } from "@/types/interfaces";
 import { motion, Variants } from "framer-motion";
+import { buildApiUrl } from "@/config/api";
 
 const container: Variants = {
   hidden: { opacity: 0 },
@@ -34,7 +35,7 @@ const Usuarios = () => {
     const fetchUsuarios = async () => {
       try {
         console.log("Intentando cargar usuarios...");
-        const response = await fetch("http://localhost:3001/users");
+        const response = await fetch(buildApiUrl("/users"));
         console.log(
           "Respuesta del servidor:",
           response.status,

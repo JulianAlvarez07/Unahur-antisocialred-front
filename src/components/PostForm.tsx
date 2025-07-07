@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { motion, Variants } from "framer-motion";
 import { Tag, Post } from "@/types/interfaces";
+import { buildApiUrl } from "@/config/api";
 
 const scaleIn: Variants = {
   initial: {
@@ -60,7 +61,7 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
     };
 
     try {
-      const response = await fetch("http://localhost:3001/post", {
+      const response = await fetch(buildApiUrl("/post"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +76,7 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
         // Agregar tags al post
         for (const tagId of selectedTags) {
           try {
-            await fetch("http://localhost:3001/comment-tags", {
+            await fetch(buildApiUrl("/comment-tags"), {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -98,7 +99,7 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
               userId: usuario.id,
             });
             const imageResponse = await fetch(
-              `http://localhost:3001/post/${data.id}/addImage`,
+              buildApiUrl(`/post/${data.id}/addImage`),
               {
                 method: "POST",
                 headers: {
@@ -115,7 +116,7 @@ const PostForm = ({ tags, posts, setPosts }: PostFormProps) => {
         // Obtener el post completo con imágenes y tags después de agregarlos
         try {
           const completePostResponse = await fetch(
-            `http://localhost:3001/post/${postId}?includeUser=true`
+            buildApiUrl(`/post/${postId}?includeUser=true`)
           );
           if (completePostResponse.ok) {
             const completePost = await completePostResponse.json();

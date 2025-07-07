@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import CommentCard from "@/components/CommentCard";
 import CommentDetailsForm from "@/components/CommentDetailsForm";
+import { buildApiUrl } from "@/config/api";
 
 const fadeInUp = {
   initial: {
@@ -45,16 +46,14 @@ const PostDetail = () => {
   const fetchPostDetail = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3001/post/${id}`);
+      const response = await fetch(buildApiUrl(`/post/${id}`));
       if (!response.ok) {
         throw new Error(`Error ${response.status}: Post no encontrado`);
       }
       const data = await response.json();
 
       // Obtener datos del usuario del post
-      const userResponse = await fetch(
-        `http://localhost:3001/users/${data.userId}`
-      );
+      const userResponse = await fetch(buildApiUrl(`/users/${data.userId}`));
       if (userResponse.ok) {
         const userData = await userResponse.json();
         data.user = userData;
@@ -66,7 +65,7 @@ const PostDetail = () => {
           ...new Set(data.comment.map((c: Comment) => c.userIdComment)),
         ];
         const userDataPromises = commentUserIds.map((userId) =>
-          fetch(`http://localhost:3001/users/${userId}`).then((r) => r.json())
+          fetch(buildApiUrl(`/users/${userId}`)).then((r) => r.json())
         );
         const users = await Promise.all(userDataPromises);
         const userMap = new Map(users.map((u) => [u.id, u]));

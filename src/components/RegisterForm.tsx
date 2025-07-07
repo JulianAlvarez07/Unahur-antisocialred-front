@@ -1,6 +1,8 @@
 import { motion } from "motion/react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { buildApiUrl } from "@/config/api";
+import { User } from "@/types/interfaces";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -23,10 +25,10 @@ const RegisterForm = () => {
     setNicknameError("");
 
     try {
-      const response = await fetch("http://localhost:3001/users");
+      const response = await fetch(buildApiUrl("/users"));
       const users = await response.json();
       const existingUser = users.find(
-        (user: any) => user.nickName === nickname
+        (user: User) => user.nickName === nickname
       );
 
       if (existingUser) {
@@ -72,7 +74,7 @@ const RegisterForm = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3001/users", {
+      const response = await fetch(buildApiUrl("/users"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

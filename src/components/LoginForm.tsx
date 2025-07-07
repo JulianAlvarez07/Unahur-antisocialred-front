@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
+import { buildApiUrl } from "@/config/api";
+import { User } from "@/types/interfaces";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -20,9 +22,9 @@ const LoginForm = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/users");
+      const response = await fetch(buildApiUrl("/users"));
       const data = await response.json();
-      const user = data.find((user: any) => user.nickName === nickname);
+      const user = data.find((user: User) => user.nickName === nickname);
 
       if (user) {
         authContext?.setUsuario?.(user);

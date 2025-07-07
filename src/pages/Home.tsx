@@ -9,6 +9,7 @@ import { Tendencias } from "@/components/homeComponents/Tendencias";
 import { Estadisticas } from "@/components/homeComponents/Estadisticas";
 import { DatosCuriosos } from "@/components/homeComponents/DatosCuriosos";
 import { CallToActionRegistro } from "@/components/homeComponents/CallToActionRegistro";
+import { buildApiUrl } from "@/config/api";
 
 const TypewriterText = ({ text }: { text: string }) => {
   return (
@@ -45,10 +46,10 @@ const Home = () => {
       console.log("Cargando datos del Home...");
 
       // Obtener posts (ya incluyen comentarios y usuario)
-      const postsResponse = await fetch("http://localhost:3001/post");
+      const postsResponse = await fetch(buildApiUrl("/post"));
       if (postsResponse.ok) {
         const postsData = await postsResponse.json();
-        console.log("Posts con tags:", postsData); // Debug para ver si vienen los tags
+        console.log("Posts con tags:", postsData);
 
         // Pone las ultimas publicaciones al principio
         const sortedPosts = postsData
@@ -62,15 +63,14 @@ const Home = () => {
       }
 
       // Obtener usuarios
-      const usersResponse = await fetch("http://localhost:3001/users");
+      const usersResponse = await fetch(buildApiUrl("/users"));
       if (usersResponse.ok) {
         const usersData = await usersResponse.json();
-
         setUsers(usersData);
       }
 
       // Obtener tags
-      const tagsResponse = await fetch("http://localhost:3001/tags");
+      const tagsResponse = await fetch(buildApiUrl("/tags"));
       if (tagsResponse.ok) {
         const tagsData = await tagsResponse.json();
         console.log("Tags cargados:", tagsData);
