@@ -34,23 +34,15 @@ const Usuarios = () => {
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        console.log("Intentando cargar usuarios...");
         const response = await fetch(buildApiUrl("/users"));
-        console.log(
-          "Respuesta del servidor:",
-          response.status,
-          response.statusText
-        );
 
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log("Usuarios cargados:", data);
         setUsuarios(data);
       } catch (error) {
-        console.error("Error detallado:", error);
         setError(
           `Error al cargar la lista de usuarios: ${
             error instanceof Error ? error.message : "Error desconocido"

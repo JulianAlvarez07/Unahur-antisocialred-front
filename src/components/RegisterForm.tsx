@@ -87,10 +87,7 @@ const RegisterForm = () => {
         alert("Error al registrar usuario");
       }
     } catch (error) {
-      console.log(
-        "Error:",
-        error instanceof Error ? error.message : "Error desconocido"
-      );
+      alert(error instanceof Error ? error.message : "Error desconocido");
     }
   };
 

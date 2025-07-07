@@ -32,14 +32,8 @@ const Publicaciones = () => {
 
   const fetchData = async () => {
     try {
-      console.log("Intentando cargar publicaciones...");
       // Obtener posts (ya incluyen comentarios y usuario)
       const postsResponse = await fetch(buildApiUrl("/post"));
-      console.log(
-        "Respuesta de posts:",
-        postsResponse.status,
-        postsResponse.statusText
-      );
       const tagsResponse = await fetch(buildApiUrl("/tags"));
       if (tagsResponse.ok) {
         const tagsData = await tagsResponse.json();
@@ -51,7 +45,6 @@ const Publicaciones = () => {
         );
       }
       const postsData = await postsResponse.json();
-      console.log("Posts cargados en Publicaciones:", postsData);
 
       // Ordenar posts por fecha descendente (más nuevos primero)
       const sortedPosts = postsData.sort(
@@ -59,13 +52,8 @@ const Publicaciones = () => {
           new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
       );
 
-      console.log(
-        "Posts con tags:",
-        sortedPosts.filter((p: Post) => p.tags && p.tags.length > 0)
-      );
       setPosts(sortedPosts);
     } catch (error) {
-      console.error("Error detallado:", error);
       setError(
         `Error al cargar las publicaciones: ${
           error instanceof Error ? error.message : "Error desconocido"

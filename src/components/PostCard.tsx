@@ -29,11 +29,7 @@ const PostCard = ({
   setPosts,
   tags,
 }: PostCardProps) => {
-  
   const navigate = useNavigate();
-  
-  // Debug para ver los tags
-  console.log(`PostCard ${postId} - Tags recibidos:`, tags);
 
   const handleVerMas = (postId: number) => {
     navigate(`/post/${postId}`);

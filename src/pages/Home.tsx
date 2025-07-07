@@ -43,13 +43,10 @@ const Home = () => {
 
   const fetchData = async () => {
     try {
-      console.log("Cargando datos del Home...");
-
       // Obtener posts (ya incluyen comentarios y usuario)
       const postsResponse = await fetch(buildApiUrl("/post"));
       if (postsResponse.ok) {
         const postsData = await postsResponse.json();
-        console.log("Posts con tags:", postsData);
 
         // Pone las ultimas publicaciones al principio
         const sortedPosts = postsData
@@ -73,11 +70,9 @@ const Home = () => {
       const tagsResponse = await fetch(buildApiUrl("/tags"));
       if (tagsResponse.ok) {
         const tagsData = await tagsResponse.json();
-        console.log("Tags cargados:", tagsData);
         setTags(tagsData);
       }
     } catch (error) {
-      console.error("Error detallado:", error);
       setError(
         `Error al cargar los datos: ${
           error instanceof Error ? error.message : "Error desconocido"

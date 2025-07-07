@@ -49,13 +49,11 @@ const Perfil = () => {
 
     try {
       setLoading(true);
-      console.log(`Cargando perfil del usuario ID: ${usuario.id}`);
 
       // Obtener datos del usuario específico
       const userResponse = await fetch(buildApiUrl(`/users/${usuario.id}`));
       if (userResponse.ok) {
         const userData = await userResponse.json();
-        console.log("Datos del usuario:", userData);
         // Cargar la descripción desde localStorage
         const savedDesc = localStorage.getItem(
           `user_description_${usuario.id}`
@@ -75,11 +73,9 @@ const Perfil = () => {
         const filteredPosts = allPosts.filter(
           (post: Post) => post.userId === usuario.id
         );
-        console.log("Posts del usuario:", filteredPosts);
         setUserPosts(filteredPosts);
       }
     } catch (error) {
-      console.error("Error al cargar el perfil:", error);
       setError(
         `Error al cargar el perfil: ${
           error instanceof Error ? error.message : "Error desconocido"
