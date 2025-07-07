@@ -156,6 +156,19 @@ const LoginForm = () => {
                 Conectate con Los CRUDos y comparte tus ideas en nuestra
                 comunidad universitaria exclusiva
               </p>
+
+              {/* Example User Credentials Box */}
+              <div className="mt-4 p-4 bg-opacity-10 backdrop-blur-sm rounded-lg border border-white border-opacity-20">
+                <p className="font-medium mb-2">Usuario de ejemplo:</p>
+                <div className="space-y-1">
+                  <p className="text-sm">
+                    <span className="font-medium">Nickname:</span> Pedrito23
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium">Contraseña:</span> 123456
+                  </p>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
