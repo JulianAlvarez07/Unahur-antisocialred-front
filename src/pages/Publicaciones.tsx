@@ -4,6 +4,7 @@ import { Post } from "@/types/interfaces";
 import { motion } from "framer-motion";
 import PostForm from "@/components/PostForm";
 import { Tag } from "@/types/interfaces";
+import { buildApiUrl } from "@/config/api";
 
 const fadeInUp = {
   initial: {
@@ -33,7 +34,7 @@ const Publicaciones = () => {
     try {
       console.log("Intentando cargar publicaciones...");
       // Obtener posts (ya incluyen comentarios y usuario)
-      const postsResponse = await fetch("http://localhost:3001/post");
+      const postsResponse = await fetch(buildApiUrl("/post"));
       console.log(
         "Respuesta de posts:",
         postsResponse.status,
