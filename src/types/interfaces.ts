@@ -19,10 +19,11 @@ export interface Comment {
   postIdComment: number;
   fecha: string;
   visible: boolean;
-  user: {
-    nickname: string;
+  user?: {
+    nickName: string; // Cambiado de nickname a nickName
     nombre: string;
   };
+  nickName?: string; // Campo adicional para compatibilidad
 }
 
 export interface Post {
@@ -51,7 +52,11 @@ export interface PostImage {
 export interface CommentForComponent {
   userId: number;
   contenido: string;
-  nickName: string;
+  nickName?: string;
+  user?: {
+    nickName: string;
+    nombre: string;
+  };
 }
 export interface UserForComponent {
   nickName: string;

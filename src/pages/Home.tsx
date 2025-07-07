@@ -169,9 +169,8 @@ const Home = () => {
                         (comment) => ({
                           userId: comment.userIdComment,
                           contenido: comment.comentario,
-                          nickName:
-                            comment.user?.nickname ||
-                            `Usuario ${comment.userIdComment}`,
+                          nickName: comment.nickName,
+                          user: comment.user,
                         })
                       );
 

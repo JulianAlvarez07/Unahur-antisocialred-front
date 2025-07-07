@@ -102,8 +102,8 @@ const Publicaciones = () => {
           const adaptedComments = (post.comment || []).map((comment) => ({
             userId: comment.userIdComment,
             contenido: comment.comentario,
-            nickName:
-              comment.user?.nickname || `Usuario ${comment.userIdComment}`,
+            nickName: comment.nickName,
+            user: comment.user,
           }));
 
           return (

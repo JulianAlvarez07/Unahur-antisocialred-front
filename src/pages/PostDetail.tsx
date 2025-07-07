@@ -32,15 +32,12 @@ const PostDetail = () => {
   const navigate = useNavigate();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) {
-      setError("ID de post no proporcionado");
-      setLoading(false);
-      return;
+    if (id) {
+      fetchPostDetail();
     }
-    fetchPostDetail();
   }, [id]);
 
   const fetchPostDetail = async () => {
@@ -64,16 +61,31 @@ const PostDetail = () => {
         const commentUserIds = [
           ...new Set(data.comment.map((c: Comment) => c.userIdComment)),
         ];
+
+        // Obtener datos de todos los usuarios que comentaron
         const userDataPromises = commentUserIds.map((userId) =>
-          fetch(buildApiUrl(`/users/${userId}`)).then((r) => r.json())
+          fetch(buildApiUrl(`/users/${userId}`))
+            .then((r) => r.json())
+            .catch(() => null)
         );
-        const users = await Promise.all(userDataPromises);
+
+        const users = (await Promise.all(userDataPromises)).filter(Boolean);
         const userMap = new Map(users.map((u) => [u.id, u]));
 
-        data.comment = data.comment.map((comment: Comment) => ({
-          ...comment,
-          nickName: userMap.get(comment.userIdComment)?.nickName,
-        }));
+        // Actualizar cada comentario con los datos del usuario
+        data.comment = data.comment.map((comment: Comment) => {
+          const userData = userMap.get(comment.userIdComment);
+          return {
+            ...comment,
+            nickName: userData?.nickName || `Usuario ${comment.userIdComment}`,
+            user: userData
+              ? {
+                  nickName: userData.nickName,
+                  nombre: userData.nombre,
+                }
+              : undefined,
+          };
+        });
       }
 
       setPost(data);
@@ -123,13 +135,6 @@ const PostDetail = () => {
   // Filtrar comentarios visibles
   const visibleComments =
     post.comment?.filter((comment: Comment) => comment.visible) || [];
-
-  // Adaptar comentarios para CommentCard
-  const adaptedComments = visibleComments.map((comment) => ({
-    userId: comment.userIdComment,
-    contenido: comment.comentario,
-    nickName: comment.user?.nickname || `Usuario ${comment.userIdComment}`,
-  }));
 
   return (
     <motion.div {...fadeInUp} className="container mx-auto px-4 py-6 md:py-8">
@@ -243,20 +248,29 @@ const PostDetail = () => {
           <CommentDetailsForm post={post} setPost={setPost} />
         </div>
         {/* Lista de Comentarios Visibles */}
-
         <div className="border-t border-gray-200 pt-6">
           <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <MessageCircle className="w-5 h-5 mr-2" />
-            Comentarios ({visibleComments.length})
+            Comentarios ({post?.comment?.filter((c) => c.visible)?.length || 0})
           </h4>
 
-          {visibleComments.length > 0 ? (
+          {post?.comment && post.comment.filter((c) => c.visible).length > 0 ? (
             <div className="space-y-4">
-              {adaptedComments.map((comment, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-4">
-                  <CommentCard comment={comment} />
-                </div>
-              ))}
+              {post.comment
+                .filter((c) => c.visible)
+                .map((comment) => {
+                  const adaptedComment = {
+                    userId: comment.userIdComment,
+                    contenido: comment.comentario,
+                    nickName: comment.nickName,
+                    user: comment.user,
+                  };
+                  return (
+                    <div key={comment.id} className="bg-gray-50 rounded-lg p-4">
+                      <CommentCard comment={adaptedComment} />
+                    </div>
+                  );
+                })}
             </div>
           ) : (
             <div className="text-center py-8">

@@ -40,9 +40,10 @@ const CommentDetailsForm = ({ post, setPost }: CommentDetailsFormProps) => {
         const commentWithUser = {
           ...savedComment,
           user: {
-            nickname: auth?.usuario?.nickName,
+            nickName: auth?.usuario?.nickName, // Cambiado de nickname a nickName
             nombre: auth?.usuario?.nombre,
           },
+          nickName: auth?.usuario?.nickName, // Agregar nickName directamente
         };
 
         setComment("");
