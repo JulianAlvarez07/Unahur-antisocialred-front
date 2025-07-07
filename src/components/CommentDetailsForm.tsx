@@ -2,13 +2,12 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { Post } from "@/types/interfaces";
 
-const CommentDetailsForm = ({
-  post,
-  setPost,
-}: {
+interface CommentDetailsFormProps {
   post: Post;
-  setPost: React.Dispatch<React.SetStateAction<Post>>;
-}) => {
+  setPost: React.Dispatch<React.SetStateAction<Post | null>>;
+}
+
+const CommentDetailsForm = ({ post, setPost }: CommentDetailsFormProps) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [comment, setComment] = useState("");
   const auth = useAuth();
@@ -50,9 +49,12 @@ const CommentDetailsForm = ({
 
         setComment("");
         setIsFormVisible(false);
-        setPost({
-          ...post,
-          comment: [...(post.comment || []), commentWithUser],
+        setPost((prevPost) => {
+          if (!prevPost) return null;
+          return {
+            ...prevPost,
+            comment: [...(prevPost.comment || []), commentWithUser],
+          };
         });
       } else {
         console.error("Error al enviar el comentario:", response.status);
