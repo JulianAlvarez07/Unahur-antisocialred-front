@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthProvider";
 import { Post } from "@/types/interfaces";
+import { buildApiUrl } from "@/config/api";
 
 interface CommentDetailsFormProps {
   post: Post;
@@ -25,16 +26,13 @@ const CommentDetailsForm = ({ post, setPost }: CommentDetailsFormProps) => {
         comentario: comment,
         userIdComment: userId,
       };
-      const response = await fetch(
-        `http://localhost:3001/post/${post.id}/comment`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(comentario),
-        }
-      );
+      const response = await fetch(buildApiUrl(`/post/${post.id}/comment`), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(comentario),
+      });
       if (response.ok) {
         const savedComment = await response.json();
 

@@ -40,7 +40,7 @@ const Publicaciones = () => {
         postsResponse.status,
         postsResponse.statusText
       );
-      const tagsResponse = await fetch("http://localhost:3001/tags");
+      const tagsResponse = await fetch(buildApiUrl("/tags"));
       if (tagsResponse.ok) {
         const tagsData = await tagsResponse.json();
         setTags(tagsData);
