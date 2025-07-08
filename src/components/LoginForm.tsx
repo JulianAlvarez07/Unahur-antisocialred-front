@@ -11,6 +11,7 @@ const LoginForm = () => {
   const authContext = useAuth();
   const [nickname, setNickname] = useState("");
   const [contrasena, setContrasena] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ const LoginForm = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
       const response = await fetch(buildApiUrl("/users"));
       const data = await response.json();
@@ -35,6 +37,8 @@ const LoginForm = () => {
     } catch (error) {
       console.error("Error:", error);
       alert("Error al conectar con el servidor");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,6 +88,7 @@ const LoginForm = () => {
                     placeholder="Ingresa tu nickname"
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -103,16 +108,25 @@ const LoginForm = () => {
                     placeholder="Ingresa tu contraseña (123456)"
                     value={contrasena}
                     onChange={(e) => setContrasena(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
 
                 <motion.button
                   type="submit"
-                  className="w-full bg-secondary text-white py-2 px-4 rounded-md font-medium transition-colors cursor-pointer"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-secondary text-white py-2 px-4 rounded-md font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  whileHover={{ scale: isLoading ? 1 : 1.03 }}
+                  whileTap={{ scale: isLoading ? 1 : 0.98 }}
+                  disabled={isLoading}
                 >
-                  Iniciar sesión
+                  {isLoading ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                      <span>Cargando...</span>
+                    </div>
+                  ) : (
+                    "Iniciar sesión"
+                  )}
                 </motion.button>
 
                 <p className="text-center text-gray-500 text-sm">

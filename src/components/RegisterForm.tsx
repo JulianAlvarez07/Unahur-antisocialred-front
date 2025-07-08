@@ -13,6 +13,7 @@ const RegisterForm = () => {
   const [birthday, setBirthday] = useState("");
   const [nicknameError, setNicknameError] = useState("");
   const [isCheckingNickname, setIsCheckingNickname] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Función para verificar si el nickname está disponible
   const checkNicknameAvailability = async (nickname: string) => {
@@ -73,6 +74,7 @@ const RegisterForm = () => {
       fechaNacimiento: birthday,
     };
 
+    setIsLoading(true);
     try {
       const response = await fetch(buildApiUrl("/users"), {
         method: "POST",
@@ -88,6 +90,8 @@ const RegisterForm = () => {
       }
     } catch (error) {
       alert(error instanceof Error ? error.message : "Error desconocido");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -131,6 +135,7 @@ const RegisterForm = () => {
                     placeholder="Ingresa tu nombre"
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -152,6 +157,7 @@ const RegisterForm = () => {
                     placeholder="Ingresa tu nickname"
                     value={nickName}
                     onChange={handleNicknameChange}
+                    disabled={isLoading}
                   />
                   {isCheckingNickname && (
                     <motion.p
@@ -189,6 +195,7 @@ const RegisterForm = () => {
                     placeholder="Ingresa tu email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -207,6 +214,7 @@ const RegisterForm = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent"
                     value={birthday}
                     onChange={(e) => setBirthday(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -226,16 +234,25 @@ const RegisterForm = () => {
                     placeholder="Ingresa tu contraseña (123456)"
                     value={contrasena}
                     onChange={(e) => setContrasena(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
 
                 <motion.button
                   type="submit"
-                  className="w-full bg-secondary text-white py-2 px-4 rounded-md font-medium transition-colors cursor-pointer"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-secondary text-white py-2 px-4 rounded-md font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  whileHover={{ scale: isLoading ? 1 : 1.03 }}
+                  whileTap={{ scale: isLoading ? 1 : 0.98 }}
+                  disabled={isLoading}
                 >
-                  Registrate
+                  {isLoading ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin"></div>
+                      <span>Cargando...</span>
+                    </div>
+                  ) : (
+                    "Registrate"
+                  )}
                 </motion.button>
 
                 <p className="text-center text-gray-500 text-sm">
