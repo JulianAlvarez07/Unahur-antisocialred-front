@@ -1,13 +1,7 @@
 import { BarChart3, Users, FileText, MessageSquare, Tags } from "lucide-react";
-import { Post, User, Tag } from "@/types/interfaces";
 import { motion } from "framer-motion";
+import { useStats } from "@/hooks/useStats";
 
-interface EstadisticasProps {
-  loading: boolean;
-  users: User[];
-  posts: Post[];
-  tags: Tag[];
-}
 const fadeInUp = {
   initial: {
     opacity: 0,
@@ -22,12 +16,9 @@ const fadeInUp = {
   },
 };
 
-export const Estadisticas = ({
-  loading,
-  users,
-  posts,
-  tags,
-}: EstadisticasProps) => {
+export const Estadisticas = () => {
+  const { loading, users, posts, tags } = useStats();
+
   return (
     <motion.div
       {...fadeInUp}

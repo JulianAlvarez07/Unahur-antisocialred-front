@@ -6,14 +6,9 @@ import {
   Code2,
   Users2,
 } from "lucide-react";
-import { Post, User } from "@/types/interfaces";
 import { motion } from "framer-motion";
+import { useStats } from "@/hooks/useStats";
 
-interface DatosCuriososProps {
-  posts: Post[];
-  users: User[];
-  loading: boolean;
-}
 const fadeInUp = {
   initial: {
     opacity: 0,
@@ -27,11 +22,10 @@ const fadeInUp = {
     },
   },
 };
-export const DatosCuriosos = ({
-  posts,
-  users,
-  loading,
-}: DatosCuriososProps) => {
+
+export const DatosCuriosos = () => {
+  const { posts, users, loading } = useStats();
+
   // Calcular datos curiosos
   const usuarioMasActivo =
     !loading && users.length > 0 && posts.length > 0
@@ -99,7 +93,9 @@ export const DatosCuriosos = ({
                 </h3>
                 <p className="text-sm text-gray-600">
                   {postMasComentado
-                    ? `${postMasComentado.comment?.length || 0} comentarios`
+                    ? `"${postMasComentado.contenido.slice(0, 30)}..." con ${
+                        postMasComentado.comment?.length || 0
+                      } comentarios`
                     : "No hay datos disponibles"}
                 </p>
               </div>

@@ -213,16 +213,11 @@ const Home = () => {
             </div>
           </main>
 
-          {/* Sidebar derecho */}
-          <aside className="lg:col-span-1 space-y-4 md:space-y-6">
+          {/* Sidebar */}
+          <aside className="space-y-6">
             <Tendencias tags={tags} loading={loading} setTags={setTags} />
-            <Estadisticas
-              loading={loading}
-              users={users}
-              posts={posts}
-              tags={tags}
-            />
-            <DatosCuriosos loading={loading} users={users} posts={posts} />
+            <Estadisticas />
+            <DatosCuriosos />
           </aside>
         </div>
       </div>

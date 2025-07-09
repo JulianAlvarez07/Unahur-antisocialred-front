@@ -1,8 +1,9 @@
 import { TrendingUp, Hash, Plus } from "lucide-react";
-import { Tag } from "@/types/interfaces";
+import { Tag, Post } from "@/types/interfaces";
 import { motion } from "framer-motion";
 import { crearTag } from "../PostTag";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { buildApiUrl } from "@/config/api";
 
 const fadeInUp = {
   initial: {
@@ -17,10 +18,15 @@ const fadeInUp = {
     },
   },
 };
+
 interface TendenciasProps {
   tags: Tag[];
   loading: boolean;
   setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+}
+
+interface TagWithPostCount extends Tag {
+  postCount: number;
 }
 
 export const Tendencias = ({ tags, loading, setTags }: TendenciasProps) => {
@@ -28,9 +34,47 @@ export const Tendencias = ({ tags, loading, setTags }: TendenciasProps) => {
   const [newTagName, setNewTagName] = useState("");
   const [error, setError] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [tagsWithCount, setTagsWithCount] = useState<TagWithPostCount[]>([]);
 
-  // Ordenar tags por cantidad de posts (simulado por ahora)
-  const trendingTags = tags.slice(0, 5);
+  useEffect(() => {
+    const fetchTagsWithPostCount = async () => {
+      try {
+        // Obtener todos los posts
+        const response = await fetch(buildApiUrl("/post"));
+        const posts = (await response.json()) as Post[];
+
+        // Contar cuántas veces aparece cada tag
+        const tagCounts = new Map<number, number>();
+        posts.forEach((post: Post) => {
+          post.tags?.forEach((tag: Tag) => {
+            const currentCount = tagCounts.get(tag.id) || 0;
+            tagCounts.set(tag.id, currentCount + 1);
+          });
+        });
+
+        // Combinar los tags con sus conteos
+        const tagsWithPostCounts: TagWithPostCount[] = tags.map((tag) => ({
+          ...tag,
+          postCount: tagCounts.get(tag.id) || 0,
+        }));
+
+        // Ordenar por cantidad de posts (descendente)
+        const sortedTags = tagsWithPostCounts.sort(
+          (a, b) => b.postCount - a.postCount
+        );
+        setTagsWithCount(sortedTags);
+      } catch (error) {
+        console.error("Error al obtener el conteo de posts por tag:", error);
+      }
+    };
+
+    if (tags.length > 0) {
+      fetchTagsWithPostCount();
+    }
+  }, [tags]);
+
+  // Tomar los 5 tags más usados
+  const trendingTags = tagsWithCount.slice(0, 5);
 
   const handleCrearTag = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,9 +178,14 @@ export const Tendencias = ({ tags, loading, setTags }: TendenciasProps) => {
                   <span className="text-gray-700 text-sm md:text-base">
                     {tag.nombreEtiqueta}
                   </span>
-                  <p className="text-xs text-white mt-1.5 bg-secondary px-2 py-1 rounded-md">
-                    Tag
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500">
+                      {tag.postCount} posts
+                    </span>
+                    <p className="text-xs text-white mt-1.5 bg-secondary px-2 py-1 rounded-md">
+                      Tag
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             ))}
