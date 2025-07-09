@@ -2,7 +2,7 @@ import { useAuth } from "@/context/AuthProvider";
 import PostForm from "../components/PostForm";
 import PostCard from "../components/PostCard";
 import { useEffect, useState } from "react";
-import { Post, User, Tag } from "@/types/interfaces";
+import { Post, Tag } from "@/types/interfaces";
 import { MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 import { Tendencias } from "@/components/homeComponents/Tendencias";
@@ -32,7 +32,6 @@ const Home = () => {
   const usuario = auth?.usuario;
 
   const [posts, setPosts] = useState<Post[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -57,13 +56,6 @@ const Home = () => {
           .slice(0, 10);
 
         setPosts(sortedPosts);
-      }
-
-      // Obtener usuarios
-      const usersResponse = await fetch(buildApiUrl("/users"));
-      if (usersResponse.ok) {
-        const usersData = await usersResponse.json();
-        setUsers(usersData);
       }
 
       // Obtener tags
@@ -183,11 +175,7 @@ const Home = () => {
                           }
                           content={post.contenido}
                           comments={adaptedComments}
-                          setPosts={
-                            setPosts as React.Dispatch<
-                              React.SetStateAction<Post[]>
-                            >
-                          }
+                          setPosts={setPosts}
                           postImages={post.post_images || []}
                           tags={post.tags || []}
                         />
@@ -199,11 +187,8 @@ const Home = () => {
                         <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                           <span className="text-2xl">📝</span>
                         </div>
-                        <p className="text-gray-500 text-lg">
+                        <p className="text-gray-500">
                           No hay publicaciones disponibles
-                        </p>
-                        <p className="text-gray-400 text-sm">
-                          ¡Sé el primero en publicar algo!
                         </p>
                       </div>
                     )}
